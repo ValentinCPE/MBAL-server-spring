@@ -9,7 +9,7 @@ import java.util.List;
 @Service
 public interface FamilyService {
 
-    Family createFamily(String name, String password);
+    Family createFamily(Integer user_id, String name, String password);
 
     Family updateNameFamily(String id_family, String name);
 
@@ -18,5 +18,7 @@ public interface FamilyService {
     String deleteFamily(String id_family);
 
     List<User> getUsersByFamily(String id_family);
+
+    String setFamilyForUser(Integer id_user, Integer id_family, String password_family);
 
 }

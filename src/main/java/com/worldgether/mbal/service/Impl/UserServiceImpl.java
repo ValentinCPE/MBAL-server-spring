@@ -39,29 +39,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User setFamilyForUser(Integer id_user, Integer id_family, String password_family) {
-
-        if(id_user == null || id_family == null || password_family == null){
-            return null;
-        }
-
-        Family family = familyRepository.findById(id_family);
-
-        User user = userRepository.findById(id_user);
-
-        if(family == null || user == null){
-            return null;
-        }
-
-        user.setFamily(family);
-
-        userRepository.save(user);
-
-        return user;
-
-    }
-
-    @Override
     public User setTokenPhoneForUser(Integer id_user, String token) {
 
         if(id_user == null || token == null){
