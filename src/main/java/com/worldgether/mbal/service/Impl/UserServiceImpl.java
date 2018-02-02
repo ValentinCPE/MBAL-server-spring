@@ -103,7 +103,41 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User updateUser(Integer id_user, String nom, String prenom, String mail, String password, String numero_telephone) {
-        return null;
+
+        if(id_user == null){
+            return null;
+        }
+
+        User userToUpdate = userRepository.findById(id_user);
+
+        if(userToUpdate == null){
+            return null;
+        }
+
+        if(nom != null){
+            userToUpdate.setNom(nom);
+        }
+
+        if(prenom != null){
+            userToUpdate.setPrenom(prenom);
+        }
+
+        if(mail != null){
+            userToUpdate.setMail(mail);
+        }
+
+        if(password != null){
+            userToUpdate.setPassword(password);
+        }
+
+        if(numero_telephone != null){
+            userToUpdate.setNumero_telephone(numero_telephone);
+        }
+
+        userRepository.save(userToUpdate);
+
+        return userToUpdate;
+
     }
 
     @Override

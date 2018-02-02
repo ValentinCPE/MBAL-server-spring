@@ -3,7 +3,7 @@ package com.worldgether.mbal.controller;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
-import com.worldgether.mbal.service.AndroidPushNotificationsService;
+import com.worldgether.mbal.service.android.AndroidPushNotificationsService;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;

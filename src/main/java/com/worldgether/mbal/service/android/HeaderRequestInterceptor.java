@@ -1,4 +1,4 @@
-package com.worldgether.mbal.service;
+package com.worldgether.mbal.service.android;
 
 import java.io.IOException;
 

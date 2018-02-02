@@ -24,8 +24,8 @@ public class Evt_message {
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private Date date;
 
-    private Integer user_id;
+    private User user;
 
-    private Integer family_id;
+    private Family family;
 
 }
