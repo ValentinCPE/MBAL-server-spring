@@ -7,11 +7,13 @@ import com.worldgether.mbal.repository.FamilyRepository;
 import com.worldgether.mbal.repository.UserRepository;
 import com.worldgether.mbal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -22,6 +24,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User createUser(String nom, String prenom, String mail, String password, String numero_telephone) {
+
+        if(nom == null || prenom == null || mail == null || password == null || numero_telephone == null){
+            return null;
+        }
 
         User newUser = new User();
 

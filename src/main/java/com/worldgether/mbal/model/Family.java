@@ -21,7 +21,4 @@ public class Family {
 
     private Timestamp creation_date;
 
-    @OneToMany(mappedBy = "family")
-    private List<User> users;
-
 }

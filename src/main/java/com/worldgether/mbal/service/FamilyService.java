@@ -11,13 +11,15 @@ public interface FamilyService {
 
     Family createFamily(Integer user_id, String name, String password);
 
-    Family updateNameFamily(String id_family, String name);
+    Family updateNameFamily(Integer id_family, String name);
 
-    Family updatePasswordFamily(String id_family, String new_password);
+    Family updatePasswordFamily(Integer id_family, String new_password);
 
-    String deleteFamily(String id_family);
+    String deleteFamily(Integer id_family);
 
-    List<User> getUsersByFamily(String id_family);
+    Family getFamily(Integer id_family);
+
+    List<User> getUsersByFamily(Integer id_family);
 
     String setFamilyForUser(Integer id_user, Integer id_family, String password_family);
 

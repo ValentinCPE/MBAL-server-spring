@@ -6,12 +6,13 @@ import com.worldgether.mbal.repository.FamilyRepository;
 import com.worldgether.mbal.repository.UserRepository;
 import com.worldgether.mbal.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Service
 public class FamilyServiceImpl implements FamilyService {
 
     @Autowired
@@ -40,11 +41,6 @@ public class FamilyServiceImpl implements FamilyService {
 
         user.setFamily(family);
 
-        List<User> users = new ArrayList<>();
-        users.add(user);
-
-        family.setUsers(users);
-
         familyRepository.save(family);
         userRepository.save(user);
 
@@ -52,23 +48,104 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public Family updateNameFamily(String id_family, String name) {
-        return null;
+    public Family updateNameFamily(Integer id_family, String name) {
+        
+        if(id_family == null || name == null){
+            return null;
+        }
+
+        Family family = familyRepository.findById(id_family);
+
+        if(family == null){
+            return null;
+        }
+
+        family.setName(name);
+
+        familyRepository.save(family);
+
+        return family;
+
     }
 
     @Override
-    public Family updatePasswordFamily(String id_family, String new_password) {
-        return null;
+    public Family updatePasswordFamily(Integer id_family, String new_password) {
+
+        if(id_family == null || new_password == null){
+            return null;
+        }
+
+        Family family = familyRepository.findById(id_family);
+
+        if(family == null){
+            return null;
+        }
+
+        family.setPassword(new_password);
+
+        familyRepository.save(family);
+
+        return family;
+
     }
 
     @Override
-    public String deleteFamily(String id_family) {
-        return null;
+    public String deleteFamily(Integer id_family) {
+
+        if (id_family == null){
+            return null;
+        }
+
+        Family family = familyRepository.findById(id_family);
+
+        if (family == null){
+            return null;
+        }
+
+        familyRepository.delete(family);
+
+        return "deleted";
+
     }
 
     @Override
-    public List<User> getUsersByFamily(String id_family) {
-        return null;
+    public Family getFamily(Integer id_family) {
+
+        if(id_family == null){
+            return null;
+        }
+
+        Family family = familyRepository.findById(id_family);
+
+        if(family == null){
+            return null;
+        }
+
+        return family;
+
+    }
+
+    @Override
+    public List<User> getUsersByFamily(Integer id_family) {
+
+        if(id_family == null){
+            return null;
+        }
+
+        Family family = familyRepository.findById(id_family);
+
+        if(family == null){
+            return null;
+        }
+
+        List<User> users = userRepository.findUserByFamily(family);
+
+        if (users == null){
+            return null;
+        }
+
+        return users;
+
     }
 
     @Override
@@ -96,11 +173,6 @@ public class FamilyServiceImpl implements FamilyService {
 
         user.setFamily(family);
 
-        List<User> users = family.getUsers();
-
-        users.add(user);
-
-        familyRepository.save(family);
         userRepository.save(user);
 
         return "USER_ADDED_TO_FAMILY";

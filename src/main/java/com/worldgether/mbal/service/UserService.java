@@ -4,8 +4,6 @@ package com.worldgether.mbal.service;
 import com.worldgether.mbal.model.User;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public interface UserService {
 
