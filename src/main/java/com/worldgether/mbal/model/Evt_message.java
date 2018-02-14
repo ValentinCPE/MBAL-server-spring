@@ -8,6 +8,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.util.Date;
 
 @Document(collection = "evt_messages")
@@ -15,14 +17,15 @@ import java.util.Date;
 public class Evt_message {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Indexed
-    private long id;
+    private String id;
 
     @Enumerated(EnumType.STRING)
     private Message message;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private Date date;
+    private Date dateUTC;
 
     private User user;
 

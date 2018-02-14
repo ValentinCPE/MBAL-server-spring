@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
-@RequestMapping("/MBAL/family")
+@RequestMapping("/family")
 public class FamilyController {
 
     @Autowired

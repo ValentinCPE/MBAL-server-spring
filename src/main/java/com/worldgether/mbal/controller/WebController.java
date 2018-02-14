@@ -3,6 +3,7 @@ package com.worldgether.mbal.controller;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 
+import com.worldgether.mbal.model.Message;
 import com.worldgether.mbal.service.android.AndroidPushNotificationsService;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -11,11 +12,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-@RequestMapping("/MBAL")
+@RequestMapping("/notification")
 public class WebController {
 
     private final String TOPIC = "JavaSampleApproach";
@@ -23,10 +25,11 @@ public class WebController {
     @Autowired
     AndroidPushNotificationsService androidPushNotificationsService;
 
-    @RequestMapping(value = "/send", method = RequestMethod.GET, produces = "application/json")
-    public ResponseEntity<String> send() throws JSONException {
+    @RequestMapping(value = "/send/{id_user}/{message_sent}", method = RequestMethod.GET, produces = "application/json")
+    public ResponseEntity<String> send(@PathVariable("id_user") Integer id_user,
+                                       @PathVariable("message_sent") Message message) throws JSONException {
 
-        JSONObject body = new JSONObject();
+     /*   JSONObject body = new JSONObject();
         body.put("to", "/topics/" + TOPIC);
         body.put("priority", "high");
 
@@ -39,7 +42,7 @@ public class WebController {
         data.put("Key-2", "JSA Data 2");
 
         body.put("notification", notification);
-        body.put("data", data);
+        body.put("data", data); */
 
 /**
  {
@@ -56,7 +59,7 @@ public class WebController {
  }
  */
 
-        HttpEntity<String> request = new HttpEntity<>(body.toString());
+     /*   HttpEntity<String> request = new HttpEntity<>(body.toString());
 
         CompletableFuture<String> pushNotification = androidPushNotificationsService.send(request);
         CompletableFuture.allOf(pushNotification).join();
@@ -71,6 +74,15 @@ public class WebController {
             e.printStackTrace();
         }
 
-        return new ResponseEntity<>("Push Notification ERROR!", HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>("Push Notification ERROR!", HttpStatus.BAD_REQUEST); */
+
+        String response = androidPushNotificationsService.saveInDb(id_user,message);
+
+        if(response == null){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<String>(response,HttpStatus.OK);
+
     }
 }

@@ -5,8 +5,12 @@ import com.worldgether.mbal.model.Family;
 import com.worldgether.mbal.model.User;
 import com.worldgether.mbal.repository.FamilyRepository;
 import com.worldgether.mbal.repository.UserRepository;
+import com.worldgether.mbal.service.PasswordService;
 import com.worldgether.mbal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -34,7 +38,7 @@ public class UserServiceImpl implements UserService {
         newUser.setNom(nom);
         newUser.setPrenom(prenom);
         newUser.setMail(mail);
-        newUser.setPassword(password);
+        newUser.setPassword(PasswordService.hashPassword(password));
         newUser.setCreation_date(new Timestamp(new Date().getTime()));
         newUser.setNumero_telephone(numero_telephone);
 
@@ -110,7 +114,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if(password != null){
-            userToUpdate.setPassword(password);
+            userToUpdate.setPassword(PasswordService.hashPassword(password));
         }
 
         if(numero_telephone != null){
@@ -121,6 +125,26 @@ public class UserServiceImpl implements UserService {
 
         return userToUpdate;
 
+    }
+
+    @Override
+    public Boolean checkIfPasswordCorrect(Integer id_user, String password) {
+
+        if(id_user == null || password == null){
+            return null;
+        }
+
+        User user = userRepository.findById(id_user);
+
+        if(user == null){
+            return null;
+        }
+
+        if(user.getPassword().equals(PasswordService.hashPassword(password))){
+            return true;
+        }else{
+            return false;
+        }
     }
 
     @Override
@@ -145,6 +169,11 @@ public class UserServiceImpl implements UserService {
 
         return userRepository.findAll();
 
+    }
+
+    @Bean
+    public PasswordEncoder getPasswordEncoder(){
+        return new BCryptPasswordEncoder();
     }
 
 }

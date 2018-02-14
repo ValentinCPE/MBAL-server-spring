@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @Controller
-@RequestMapping("/MBAL/user")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -85,6 +85,20 @@ public class UserController {
         }
 
         return new ResponseEntity<User>(userUpdated,HttpStatus.OK);
+
+    }
+
+    @PostMapping("/checkIfPasswordCorrect")
+    public ResponseEntity<Boolean> checkIfPasswordCorrect(@RequestParam("id_user") Integer id_user,
+                                                          @RequestParam("password") String password){
+
+        Boolean isPasswordCorrect = userService.checkIfPasswordCorrect(id_user,password);
+
+        if(isPasswordCorrect == null){
+            return new ResponseEntity<Boolean>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<Boolean>(isPasswordCorrect,HttpStatus.OK);
 
     }
 

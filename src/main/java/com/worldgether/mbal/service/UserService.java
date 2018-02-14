@@ -15,6 +15,8 @@ public interface UserService {
 
     User updateUser(Integer id_user, String nom, String prenom, String mail, String password, String numero_telephone);
 
+    Boolean checkIfPasswordCorrect(Integer id_user, String password);
+
     User getUser(Integer id_user);
 
     Iterable<User> getAllUsers();

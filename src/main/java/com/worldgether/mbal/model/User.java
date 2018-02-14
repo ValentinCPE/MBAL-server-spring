@@ -4,6 +4,7 @@ import lombok.Data;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
+import java.util.List;
 
 @Table(name = "User")
 @Entity
@@ -20,6 +21,7 @@ public class User {
 
     private String mail;
 
+    @Column(length = 70)
     private String password;
 
     private Timestamp creation_date;
@@ -31,6 +33,9 @@ public class User {
     @ManyToOne
     @JoinColumn(name = "family_id")
     private Family family;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
+    private List<Role> roles;
 
 
 }
