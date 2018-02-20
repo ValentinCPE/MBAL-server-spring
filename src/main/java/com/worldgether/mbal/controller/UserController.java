@@ -1,6 +1,7 @@
 package com.worldgether.mbal.controller;
 
 import com.worldgether.mbal.model.Family;
+import com.worldgether.mbal.model.Role;
 import com.worldgether.mbal.model.User;
 import com.worldgether.mbal.repository.UserRepository;
 import com.worldgether.mbal.service.FamilyService;
@@ -27,33 +28,34 @@ public class UserController {
     private UserRepository userRepository;
 
     @PostMapping("/create")
-    public ResponseEntity<User> createUser(@RequestParam("name") String name,
+    public ResponseEntity<String> createUser(@RequestParam("name") String name,
                                            @RequestParam("prenom") String prenom,
                                            @RequestParam("mail") String mail,
                                            @RequestParam("password") String password,
-                                           @RequestParam("num_tel") String numero_telephone) {
+                                           @RequestParam("num_tel") String numero_telephone,
+                                           @RequestParam("role") String role) {
 
-        User newUser = userService.createUser(name,prenom,mail,password,numero_telephone);
+        String response = userService.createUser(name,prenom,mail,password,numero_telephone,role);
 
-        if(newUser == null){
-            return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
+        if(response == null){
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<User>(newUser,HttpStatus.OK);
+        return new ResponseEntity<String>(response,HttpStatus.OK);
 
     }
 
     @PostMapping("/setTokenForUser")
-    public ResponseEntity<User> setTokenForUser(@RequestParam("id_user") Integer id_user,
+    public ResponseEntity<String> setTokenForUser(@RequestParam("id_user") Integer id_user,
                                                 @RequestParam("token_phone") String token_phone){
 
-        User userEdited = userService.setTokenPhoneForUser(id_user,token_phone);
+        String response = userService.setTokenPhoneForUser(id_user,token_phone);
 
-        if(userEdited == null){
-            return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
+        if(response == null){
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<User>(userEdited,HttpStatus.OK);
+        return new ResponseEntity<String>(response,HttpStatus.OK);
 
     }
 
@@ -71,34 +73,34 @@ public class UserController {
     }
 
     @PostMapping("/updateUser")
-    public ResponseEntity<User> updateUser(@RequestParam("id_user") Integer id_user,
+    public ResponseEntity<String> updateUser(@RequestParam("id_user") Integer id_user,
                                            @RequestParam("name") String name,
                                            @RequestParam("prenom") String prenom,
                                            @RequestParam("mail") String mail,
                                            @RequestParam("password") String password,
                                            @RequestParam("numero_telephone") String num_telephone){
 
-        User userUpdated = userService.updateUser(id_user,name,prenom,mail,password,num_telephone);
+        String response = userService.updateUser(id_user,name,prenom,mail,password,num_telephone);
 
-        if(userUpdated == null){
-            return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
+        if(response == null){
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<User>(userUpdated,HttpStatus.OK);
+        return new ResponseEntity<String>(response,HttpStatus.OK);
 
     }
 
     @PostMapping("/checkIfPasswordCorrect")
-    public ResponseEntity<Boolean> checkIfPasswordCorrect(@RequestParam("id_user") Integer id_user,
+    public ResponseEntity<String> checkIfPasswordCorrect(@RequestParam("id_user") Integer id_user,
                                                           @RequestParam("password") String password){
 
-        Boolean isPasswordCorrect = userService.checkIfPasswordCorrect(id_user,password);
+        String isPasswordCorrect = userService.checkIfPasswordCorrect(id_user,password);
 
         if(isPasswordCorrect == null){
-            return new ResponseEntity<Boolean>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<Boolean>(isPasswordCorrect,HttpStatus.OK);
+        return new ResponseEntity<String>(isPasswordCorrect,HttpStatus.OK);
 
     }
 

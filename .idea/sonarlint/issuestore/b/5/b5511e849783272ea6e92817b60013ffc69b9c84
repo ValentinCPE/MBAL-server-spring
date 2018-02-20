@@ -1,10 +1,0 @@
-
-msquid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(€¾¨(8¬Ú°•,
-ssquid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(çÇøÿÿÿÿ8¬Ú°•,
-nsquid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(êä“8¬Ú°•,
-ysquid:S00120"WRename this package name to match the regular expression '^[a-z]+(\.[a-z][a-z0-9]*)*$'.(“Ïà°úÿÿÿÿ8¬Ú°•,
-Ysquid:UselessImportCheck"+Remove this unused import 'java.util.List'.(Õë±Äøÿÿÿÿ8¬Ú°•,
-nsquid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ˆ´„Ä8³ä°•,
-nsquid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¹¬¶ç8¬Ú°•,
-ssquid:S00117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(çÇøÿÿÿÿ8¬Ú°•,
-gsquid:UselessImportCheck">Remove this unused import 'com.worldgether.mbal.model.Family'.(““êÁ8½õ´•,

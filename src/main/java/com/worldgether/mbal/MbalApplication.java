@@ -49,13 +49,13 @@ public class MbalApplication extends SpringBootServletInitializer {
 		//Setup a default user if db is empty
 		if (repository.count()==0) {
 			User user = new User();
-			user.setNom("user");
-			user.setPrenom("user");
-			user.setMail("valentin.guevara@live.com");
-			user.setPassword(passwordEncoder.encode("password"));
+			user.setNom("Admin");
+			user.setPrenom("Admin");
+			user.setMail("admin");
+			user.setPassword(passwordEncoder.encode("Valentin34"));
 			user.setCreation_date(new Timestamp(new Date().getTime()));
-			user.setNumero_telephone("0608144214");
-			user.setRoles(Arrays.asList(new Role("USER"), new Role("ACTUATOR")));
+			user.setNumero_telephone("0000000000");
+			user.setRoles(Arrays.asList(new Role("USER"), new Role("ADMIN")));
 			repository.save(user);
 		}
 		builder.userDetailsService(userDetailsService(repository)).passwordEncoder(passwordEncoder);

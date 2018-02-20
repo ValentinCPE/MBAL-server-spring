@@ -1,8 +1,0 @@
-
-%squid:RedundantThrowsDeclarationCheck"aRemove the declaration of thrown exception 'org.json.JSONException' which is a runtime exception.(…Œí†
-[squid:S2142"FEither re-interrupt this method or rethrow the "InterruptedException".(ä ¹€
-6squid:S1170"!Make this final field static too.(ö¥Ğ®
-^squid:S2147"DCombine this catch with the one at line 68, which has the same body.(åşŒóùÿÿÿÿ
-fsquid:S00116"PRename this field "TOPIC" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ö¥Ğ®
-=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ
-=squid:S1148"#Use a logger to log this exception.(€ÉÔ…ıÿÿÿÿ

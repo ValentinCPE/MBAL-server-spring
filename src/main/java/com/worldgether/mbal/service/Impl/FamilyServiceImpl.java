@@ -7,6 +7,7 @@ import com.worldgether.mbal.repository.UserRepository;
 import com.worldgether.mbal.service.FamilyService;
 import com.worldgether.mbal.service.PasswordService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -22,6 +23,9 @@ public class FamilyServiceImpl implements FamilyService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public Family createFamily(Integer user_id, String name, String password) {
 
@@ -31,7 +35,7 @@ public class FamilyServiceImpl implements FamilyService {
 
         Family family = new Family();
         family.setName(name);
-        family.setPassword(PasswordService.hashPassword(password));
+        family.setPassword(passwordEncoder.encode(password));
         family.setCreation_date(new Timestamp(new Date().getTime()));
 
         User user = userRepository.findById(user_id);
@@ -162,7 +166,7 @@ public class FamilyServiceImpl implements FamilyService {
             return null;
         }
 
-        if(!family.getPassword().equals(PasswordService.hashPassword(password_family))){
+        if(!family.getPassword().equals(passwordEncoder.encode(password_family))){
             return "PASSWORD_INCORRECT";
         }
 
