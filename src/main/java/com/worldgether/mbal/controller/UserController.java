@@ -46,10 +46,10 @@ public class UserController {
     }
 
     @PostMapping("/setTokenForUser")
-    public ResponseEntity<String> setTokenForUser(@RequestParam("id_user") Integer id_user,
+    public ResponseEntity<String> setTokenForUser(@RequestParam("username") String username,
                                                 @RequestParam("token_phone") String token_phone){
 
-        String response = userService.setTokenPhoneForUser(id_user,token_phone);
+        String response = userService.setTokenPhoneForUser(username,token_phone);
 
         if(response == null){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -60,9 +60,9 @@ public class UserController {
     }
 
     @PostMapping("/deleteUser")
-    public ResponseEntity<String> deleteUser(@RequestParam("id_user") Integer id_user){
+    public ResponseEntity<String> deleteUser(@RequestParam("username") String username){
 
-        String response = userService.deleteUser(id_user);
+        String response = userService.deleteUser(username);
 
         if (response == null){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -73,14 +73,13 @@ public class UserController {
     }
 
     @PostMapping("/updateUser")
-    public ResponseEntity<String> updateUser(@RequestParam("id_user") Integer id_user,
-                                           @RequestParam("name") String name,
+    public ResponseEntity<String> updateUser(@RequestParam("name") String name,
                                            @RequestParam("prenom") String prenom,
                                            @RequestParam("mail") String mail,
                                            @RequestParam("password") String password,
                                            @RequestParam("numero_telephone") String num_telephone){
 
-        String response = userService.updateUser(id_user,name,prenom,mail,password,num_telephone);
+        String response = userService.updateUser(name,prenom,mail,password,num_telephone);
 
         if(response == null){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -91,10 +90,10 @@ public class UserController {
     }
 
     @PostMapping("/checkIfPasswordCorrect")
-    public ResponseEntity<String> checkIfPasswordCorrect(@RequestParam("id_user") Integer id_user,
+    public ResponseEntity<String> checkIfPasswordCorrect(@RequestParam("username") String username,
                                                           @RequestParam("password") String password){
 
-        String isPasswordCorrect = userService.checkIfPasswordCorrect(id_user,password);
+        String isPasswordCorrect = userService.checkIfPasswordCorrect(username,password);
 
         if(isPasswordCorrect == null){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -105,11 +104,11 @@ public class UserController {
     }
 
     @PostMapping("/setFamilyForUser")
-    public ResponseEntity<String> setFamilyForUser(@RequestParam("id_user") Integer id_user,
-                                                   @RequestParam("id_family") Integer id_family,
+    public ResponseEntity<String> setFamilyForUser(@RequestParam("username") String username,
+                                                   @RequestParam("name_family") String name_family,
                                                    @RequestParam("password_family") String password_family){
 
-        String response = familyService.setFamilyForUser(id_user,id_family,password_family);
+        String response = familyService.setFamilyForUser(username,name_family,password_family);
 
         if(response == null){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -119,10 +118,10 @@ public class UserController {
 
     }
 
-    @GetMapping("/getUserById/{id_user}")
-    public ResponseEntity<User> getUserById(@PathVariable("id_user") Integer id_user){
+    @GetMapping("/getUserByName/{username}")
+    public ResponseEntity<User> getUserByName(@PathVariable("username") String username){
 
-        User user = userService.getUser(id_user);
+        User user = userService.getUser(username);
 
         if(user == null){
             return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -132,10 +131,10 @@ public class UserController {
 
     }
 
-    @GetMapping("/getUsersByFamilyId/{family_id}")
-    public ResponseEntity<List<User>> getUsersByFamilyId(@PathVariable("family_id") Integer family_id){
+    @GetMapping("/getUsersByFamilyName/{family_name}")
+    public ResponseEntity<List<User>> getUsersByFamilyId(@PathVariable("family_name") String family_name){
 
-        List<User> users = familyService.getUsersByFamily(family_id);
+        List<User> users = familyService.getUsersByFamily(family_name);
 
         if (users == null){
             return new ResponseEntity<List<User>>(HttpStatus.INTERNAL_SERVER_ERROR);

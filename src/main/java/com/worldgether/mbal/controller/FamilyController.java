@@ -21,52 +21,26 @@ public class FamilyController {
     private FamilyRepository familyRepository;
 
     @PostMapping("/createFamily")
-    public ResponseEntity<Family> createFamily(@RequestParam("name") String name,
+    public ResponseEntity<String> createFamily(@RequestParam("familyname") String name,
                                               @RequestParam("password") String password,
-                                              @RequestParam("id_user") Integer id_user){
+                                              @RequestParam("username") String username){
 
-        Family newFamily = familyService.createFamily(id_user,name,password);
+        String response = familyService.createFamily(username,name,password);
 
-        if (newFamily == null){
-            return new ResponseEntity<Family>(HttpStatus.INTERNAL_SERVER_ERROR);
+        if (response == null){
+            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<Family>(newFamily,HttpStatus.OK);
-
-    }
-
-    @PostMapping("/updateNameFamily")
-    public ResponseEntity<Family> updateNameFamily(@RequestParam("id_family") Integer id_family,
-                                                   @RequestParam("name") String name){
-
-        Family family = familyService.updateNameFamily(id_family,name);
-
-        if(family == null){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return new ResponseEntity<Family>(family,HttpStatus.OK);
+        return new ResponseEntity<String>(response,HttpStatus.OK);
 
     }
 
     @PostMapping("/updatePasswordFamily")
-    public ResponseEntity<Family> updatePasswordFamily(@RequestParam("id_family") Integer id_family,
-                                                   @RequestParam("password") String newPassword){
+    public ResponseEntity<String> updatePasswordFamily(@RequestParam("familyname") String name,
+                                                   @RequestParam("old_password") String oldPassword,
+                                                   @RequestParam("new_password") String newPassword){
 
-        Family family = familyService.updatePasswordFamily(id_family,newPassword);
-
-        if(family == null){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return new ResponseEntity<Family>(family,HttpStatus.OK);
-
-    }
-
-    @PostMapping("/deleteFamily")
-    public ResponseEntity<String> deleteFamily(@RequestParam("id_family") Integer id_family){
-
-        String response = familyService.deleteFamily(id_family);
+        String response = familyService.updatePasswordFamily(name,oldPassword,newPassword);
 
         if(response == null){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -76,10 +50,23 @@ public class FamilyController {
 
     }
 
-    @GetMapping("/getFamily/{id_family}")
-    public ResponseEntity<Family> getFamily(@PathVariable("id_family") Integer id_family){
+    @PostMapping("/deleteFamily")
+    public ResponseEntity<String> deleteFamily(@RequestParam("name") String name){
 
-        Family family = familyService.getFamily(id_family);
+        String response = familyService.deleteFamily(name);
+
+        if(response == null){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<String>(response,HttpStatus.OK);
+
+    }
+
+    @GetMapping("/getFamilyByName/{name}")
+    public ResponseEntity<Family> getFamily(@PathVariable("name") String name){
+
+        Family family = familyService.getFamily(name);
 
         if(family == null){
             return new ResponseEntity<Family>(HttpStatus.INTERNAL_SERVER_ERROR);

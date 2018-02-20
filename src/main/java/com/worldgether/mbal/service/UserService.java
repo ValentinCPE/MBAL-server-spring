@@ -12,15 +12,15 @@ public interface UserService {
 
     String createUser(String nom, String prenom, String mail, String password, String numero_telephone, String role);
 
-    String setTokenPhoneForUser(Integer id_user, String token);
+    String setTokenPhoneForUser(String username, String token);
 
-    String deleteUser(Integer id_user);
+    String deleteUser(String username);
 
-    String updateUser(Integer id_user, String nom, String prenom, String mail, String password, String numero_telephone);
+    String updateUser(String nom, String prenom, String mail, String password, String numero_telephone);
 
-    String checkIfPasswordCorrect(Integer id_user, String password);
+    String checkIfPasswordCorrect(String username, String password);
 
-    User getUser(Integer id_user);
+    User getUser(String username);
 
     Iterable<User> getAllUsers();
 

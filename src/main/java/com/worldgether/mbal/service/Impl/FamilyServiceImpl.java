@@ -1,11 +1,13 @@
 package com.worldgether.mbal.service.Impl;
 
 import com.worldgether.mbal.model.Family;
+import com.worldgether.mbal.model.Response;
 import com.worldgether.mbal.model.User;
 import com.worldgether.mbal.repository.FamilyRepository;
 import com.worldgether.mbal.repository.UserRepository;
 import com.worldgether.mbal.service.FamilyService;
 import com.worldgether.mbal.service.PasswordService;
+import com.worldgether.mbal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,10 +29,14 @@ public class FamilyServiceImpl implements FamilyService {
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public Family createFamily(Integer user_id, String name, String password) {
+    public String createFamily(String username, String name, String password) {
 
-        if(name == null || password == null){
+        if(username == null || name == null || password == null){
             return null;
+        }
+
+        if(familyRepository.findByName(name) != null){
+            return Response.FAMILY_ALREADY_EXISTS.toString();
         }
 
         Family family = new Family();
@@ -38,10 +44,10 @@ public class FamilyServiceImpl implements FamilyService {
         family.setPassword(passwordEncoder.encode(password));
         family.setCreation_date(new Timestamp(new Date().getTime()));
 
-        User user = userRepository.findById(user_id);
+        User user = userRepository.findByMail(username);
 
         if(user == null){
-            return null;
+            return Response.USER_ID_DOESNT_EXIST.toString();
         }
 
         user.setFamily(family);
@@ -49,10 +55,10 @@ public class FamilyServiceImpl implements FamilyService {
         familyRepository.save(family);
         userRepository.save(user);
 
-        return family;
+        return Response.OK.toString();
     }
 
-    @Override
+  /*  @Override
     public Family updateNameFamily(Integer id_family, String name) {
         
         if(id_family == null || name == null){
@@ -71,56 +77,68 @@ public class FamilyServiceImpl implements FamilyService {
 
         return family;
 
-    }
+    } */
 
     @Override
-    public Family updatePasswordFamily(Integer id_family, String new_password) {
+    public String updatePasswordFamily(String name, String old_password, String new_password) {
 
-        if(id_family == null || new_password == null){
+        if(name == null || old_password == null || new_password == null){
             return null;
         }
 
-        Family family = familyRepository.findById(id_family);
+        Family family = familyRepository.findByName(name);
 
         if(family == null){
-            return null;
+            return Response.FAMILY_ID_DOESNT_EXIST.toString();
         }
 
-        family.setPassword(PasswordService.hashPassword(new_password));
+        if(!passwordEncoder.matches(old_password,family.getPassword())){
+            return Response.PASSWORD_NOT_CORRECT.toString();
+        }
+
+        family.setPassword(passwordEncoder.encode(new_password));
 
         familyRepository.save(family);
 
-        return family;
+        return Response.OK.toString();
 
     }
 
     @Override
-    public String deleteFamily(Integer id_family) {
+    public String deleteFamily(String name) {
 
-        if (id_family == null){
+        if (name == null){
             return null;
         }
 
-        Family family = familyRepository.findById(id_family);
+        Family family = familyRepository.findByName(name);
 
         if (family == null){
-            return null;
+            return Response.FAMILY_ID_DOESNT_EXIST.toString();
+        }
+
+        List<User> users = getUsersByFamily(name);
+
+        if(users != null){
+            for(User user : users){
+                userRepository.findByMail(user.getMail()).setFamily(null);
+            }
         }
 
         familyRepository.delete(family);
 
-        return "deleted";
+        return Response.DELETION_SUCCESSFUL.toString();
 
     }
 
     @Override
-    public Family getFamily(Integer id_family) {
+    public Family getFamily(String name) {
 
-        if(id_family == null){
+        if(name == null){
             return null;
         }
 
-        Family family = familyRepository.findById(id_family);
+        Family family = familyRepository.findByName(name);
 
         if(family == null){
             return null;
@@ -131,13 +149,13 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public List<User> getUsersByFamily(Integer id_family) {
+    public List<User> getUsersByFamily(String name) {
 
-        if(id_family == null){
+        if(name == null){
             return null;
         }
 
-        Family family = familyRepository.findById(id_family);
+        Family family = familyRepository.findByName(name);
 
         if(family == null){
             return null;
@@ -154,33 +172,33 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public String setFamilyForUser(Integer id_user, Integer id_family, String password_family) {
+    public String setFamilyForUser(String username, String name_family, String password_family) {
 
-        if(id_user == null || id_family == null || password_family == null){
+        if(username == null || name_family == null || password_family == null){
             return null;
         }
 
-        Family family = familyRepository.findById(id_family);
+        Family family = familyRepository.findByName(name_family);
 
         if(family == null){
-            return null;
+            return Response.FAMILY_ID_DOESNT_EXIST.toString();
         }
 
-        if(!family.getPassword().equals(passwordEncoder.encode(password_family))){
-            return "PASSWORD_INCORRECT";
+        if(!passwordEncoder.matches(password_family,family.getPassword())){
+            return Response.PASSWORD_NOT_CORRECT.toString();
         }
 
-        User user = userRepository.findById(id_user);
+        User user = userRepository.findByMail(username);
 
         if(user == null){
-            return null;
+            return Response.USER_ID_DOESNT_EXIST.toString();
         }
 
         user.setFamily(family);
 
         userRepository.save(user);
 
-        return "USER_ADDED_TO_FAMILY";
+        return Response.USER_ADDED_TO_FAMILY.toString();
     }
 
 }

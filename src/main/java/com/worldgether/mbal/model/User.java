@@ -19,6 +19,7 @@ public class User {
 
     private String prenom;
 
+    @Column(unique=true)
     private String mail;
 
     @Column(length = 70)

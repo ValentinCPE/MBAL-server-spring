@@ -9,18 +9,16 @@ import java.util.List;
 @Service
 public interface FamilyService {
 
-    Family createFamily(Integer user_id, String name, String password);
+    String createFamily(String username, String name, String password);
 
-    Family updateNameFamily(Integer id_family, String name);
+    String updatePasswordFamily(String name, String old_password, String new_password);
 
-    Family updatePasswordFamily(Integer id_family, String new_password);
+    String deleteFamily(String name);
 
-    String deleteFamily(Integer id_family);
+    Family getFamily(String name);
 
-    Family getFamily(Integer id_family);
+    List<User> getUsersByFamily(String name);
 
-    List<User> getUsersByFamily(Integer id_family);
-
-    String setFamilyForUser(Integer id_user, Integer id_family, String password_family);
+    String setFamilyForUser(String username, String name_family, String password_family);
 
 }

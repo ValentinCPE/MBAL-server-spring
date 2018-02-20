@@ -8,4 +8,6 @@ public interface FamilyRepository extends CrudRepository<Family, Long> {
 
     Family findById(int id_family);
 
+    Family findByName(String name);
+
 }

@@ -5,6 +5,7 @@ import com.worldgether.mbal.model.Response;
 import com.worldgether.mbal.model.Role;
 import com.worldgether.mbal.model.User;
 import com.worldgether.mbal.repository.FamilyRepository;
+import com.worldgether.mbal.repository.RoleRepository;
 import com.worldgether.mbal.repository.UserRepository;
 import com.worldgether.mbal.service.PasswordService;
 import com.worldgether.mbal.service.UserService;
@@ -24,6 +25,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private FamilyRepository familyRepository;
+
+    @Autowired
+    private RoleRepository roleRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -48,7 +52,14 @@ public class UserServiceImpl implements UserService {
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setCreation_date(new Timestamp(new Date().getTime()));
         newUser.setNumero_telephone(numero_telephone);
-        newUser.setRoles(Arrays.asList(new Role(role)));
+
+        Role roleExists = roleRepository.findByName(role);
+
+        if(roleExists == null){
+            newUser.setRoles(Arrays.asList(new Role(role)));
+        }else{
+            newUser.setRoles(Arrays.asList(roleExists));
+        }
 
         userRepository.save(newUser);
 
@@ -57,15 +68,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String setTokenPhoneForUser(Integer id_user, String token) {
+    public String setTokenPhoneForUser(String username, String token) {
 
         boolean isUser = false;
 
-        if(id_user == null || token == null){
+        if(username == null || token == null){
             return null;
         }
 
-        User user = userRepository.findById(id_user);
+        User user = userRepository.findByMail(username);
 
         if(user == null){
             return Response.USER_ID_DOESNT_EXIST.toString();
@@ -91,32 +102,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String deleteUser(Integer id_user) {
+    public String deleteUser(String username) {
 
-        if(id_user == null){
+        if(username == null){
             return null;
         }
 
-        User user = userRepository.findById(id_user);
+        User user = userRepository.findByMail(username);
 
         if(user == null){
-            return null;
+            return Response.USER_ID_DOESNT_EXIST.toString();
         }
 
         userRepository.delete(user);
 
-        return "deleted";
+        return Response.DELETION_SUCCESSFUL.toString();
 
     }
 
     @Override
-    public String updateUser(Integer id_user, String nom, String prenom, String mail, String password, String numero_telephone) {
+    public String updateUser(String nom, String prenom, String mail, String password, String numero_telephone) {
 
-        if(id_user == null){
+        if(mail == null){
             return null;
         }
 
-        User userToUpdate = userRepository.findById(id_user);
+        User userToUpdate = userRepository.findByMail(mail);
 
         if(userToUpdate == null){
             return Response.USER_ID_DOESNT_EXIST.toString();
@@ -149,19 +160,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String checkIfPasswordCorrect(Integer id_user, String password) {
+    public String checkIfPasswordCorrect(String username, String password) {
 
-        if(id_user == null || password == null){
+        if(username == null || password == null){
             return null;
         }
 
-        User user = userRepository.findById(id_user);
+        User user = userRepository.findByMail(username);
 
         if(user == null){
             return Response.USER_ID_DOESNT_EXIST.toString();
         }
 
-        if(user.getPassword().equals(passwordEncoder.encode(password))){
+        if(passwordEncoder.matches(password,user.getPassword())){
             return Response.OK.toString();
         }else{
             return Response.PASSWORD_NOT_CORRECT.toString();
@@ -169,13 +180,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User getUser(Integer id_user) {
+    public User getUser(String username) {
 
-        if(id_user == null){
+        if(username == null){
             return null;
         }
 
-        User user = userRepository.findById(id_user);
+        User user = userRepository.findByMail(username);
 
         if(user == null){
             return null;
