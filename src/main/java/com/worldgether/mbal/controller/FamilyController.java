@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
-@RequestMapping("/family")
+@RequestMapping("/api/family")
 public class FamilyController {
 
     @Autowired
