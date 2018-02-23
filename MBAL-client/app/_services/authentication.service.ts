@@ -10,7 +10,7 @@ export class AuthenticationService {
     constructor(private http: HttpClient) { }
 
     login(username: string, password: string) {
-        return this.http.post<any>(appConfig.apiUrlMethods + '/users/authenticate', { username: username, password: password })
+        return this.http.post<any>(appConfig.apiUrlMethods + '/users/authenticate', { grant_type: "password", username: "admin", password: "Valentin34" })
             .map(user => {
                 // login successful if there's a jwt token in the response
                 if (user && user.token) {
@@ -25,5 +25,9 @@ export class AuthenticationService {
     logout() {
         // remove user from local storage to log user out
         localStorage.removeItem('currentUser');
+    }
+
+    getAuthToken() {
+        return this.http.post<any>(appConfig.apiUrlToken, { grant_type: "password", username: "admin", password: "Valentin34" })
     }
 }
