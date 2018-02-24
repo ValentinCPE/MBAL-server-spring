@@ -20,18 +20,6 @@ var RegisterComponent = /** @class */ (function () {
         this.model = {};
         this.loading = false;
     }
-    RegisterComponent.prototype.register = function () {
-        var _this = this;
-        this.loading = true;
-        this.userService.create(this.model)
-            .subscribe(function (data) {
-            _this.alertService.success('Registration successful', true);
-            _this.router.navigate(['/login']);
-        }, function (error) {
-            _this.alertService.error(error);
-            _this.loading = false;
-        });
-    };
     RegisterComponent = __decorate([
         core_1.Component({
             moduleId: module.id,

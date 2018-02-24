@@ -6,19 +6,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = require("@angular/core");
-var platform_browser_1 = require("@angular/platform-browser");
-var forms_1 = require("@angular/forms");
-var http_1 = require("@angular/common/http");
+var core_1 = require("../node_modules/@angular/core");
+var platform_browser_1 = require("../node_modules/@angular/platform-browser");
+var forms_1 = require("../node_modules/@angular/forms");
+var http_1 = require("../node_modules/@angular/common/http");
 var app_component_1 = require("./app.component");
 var app_routing_1 = require("./app.routing");
-var index_1 = require("./_directives/index");
-var index_2 = require("./_guards/index");
-var index_3 = require("./_helpers/index");
-var index_4 = require("./_services/index");
-var index_5 = require("./home/index");
-var index_6 = require("./login/index");
-var index_7 = require("./register/index");
+var _directives_1 = require("./_directives");
+var _guards_1 = require("./_guards");
+var _helpers_1 = require("./_helpers");
+var _services_1 = require("./_services");
+var home_1 = require("./home");
+var login_1 = require("./login");
+var register_1 = require("./register");
 var AppModule = /** @class */ (function () {
     function AppModule() {
     }
@@ -28,22 +28,22 @@ var AppModule = /** @class */ (function () {
                 platform_browser_1.BrowserModule,
                 forms_1.FormsModule,
                 http_1.HttpClientModule,
-                app_routing_1.routing
+                app_routing_1.routing,
             ],
             declarations: [
                 app_component_1.AppComponent,
-                index_1.AlertComponent,
-                index_5.HomeComponent,
-                index_6.LoginComponent,
-                index_7.RegisterComponent
+                _directives_1.AlertComponent,
+                home_1.HomeComponent,
+                login_1.LoginComponent,
+                register_1.RegisterComponent
             ],
             providers: [
-                index_2.AuthGuard,
-                index_4.AlertService,
-                index_4.AuthenticationService,
-                index_4.UserService,
-                index_3.JwtInterceptorProvider,
-                index_3.ErrorInterceptorProvider
+                _guards_1.AuthGuard,
+                _services_1.AlertService,
+                _services_1.AuthenticationService,
+                _services_1.UserService,
+                _helpers_1.JwtInterceptorProvider,
+                _helpers_1.ErrorInterceptorProvider
             ],
             bootstrap: [app_component_1.AppComponent]
         })

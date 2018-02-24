@@ -18,7 +18,7 @@ var AuthenticationService = /** @class */ (function () {
         this.http = http;
     }
     AuthenticationService.prototype.login = function (username, password) {
-        return this.http.post(app_config_1.appConfig.apiUrlMethods + '/users/authenticate', { username: username, password: password })
+        return this.http.post(app_config_1.appConfig.apiUrlMethods + '/users/authenticate', { grant_type: "password", username: "admin", password: "Valentin34" })
             .map(function (user) {
             // login successful if there's a jwt token in the response
             if (user && user.token) {
@@ -31,6 +31,14 @@ var AuthenticationService = /** @class */ (function () {
     AuthenticationService.prototype.logout = function () {
         // remove user from local storage to log user out
         localStorage.removeItem('currentUser');
+    };
+    AuthenticationService.prototype.getAuthToken = function () {
+        var body = 'grant_type=password&username=admin&password=Valentin34';
+        var headersToSend = new http_1.HttpHeaders();
+        headersToSend.append('Content-Type', 'application/x-www-form-urlencoded');
+        headersToSend.append('Authorization', 'Basic bXktdHJ1c3RlZC1jbGllbnQ6c2VjcmV0');
+        return this.http.post(app_config_1.appConfig.apiUrlToken, body, { headers: headersToSend })
+            .map(function (data) { return data.json(); });
     };
     AuthenticationService = __decorate([
         core_1.Injectable(),

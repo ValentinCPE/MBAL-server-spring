@@ -22,14 +22,14 @@ import { JwtModule } from '@auth0/angular-jwt';
         FormsModule,
         HttpClientModule,
         routing,
-        JwtModule.forRoot({
+      /*  JwtModule.forRoot({
             config: {
                 tokenGetter: () => {
                     return localStorage.getItem('auth_token');
                 },
                 whitelistedDomains: ['localhost:9000']
             }
-        }),
+        }), */
     ],
     declarations: [
         AppComponent,

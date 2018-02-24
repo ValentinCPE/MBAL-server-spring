@@ -28,6 +28,13 @@ export class AuthenticationService {
     }
 
     getAuthToken() {
-        return this.http.post<any>(appConfig.apiUrlToken, { grant_type: "password", username: "admin", password: "Valentin34" })
+        let body = 'grant_type=password&username=admin&password=Valentin34';
+        let headersToSend = new HttpHeaders();
+        headersToSend.append('Content-Type', 'application/x-www-form-urlencoded');
+        headersToSend.append('Authorization','Basic bXktdHJ1c3RlZC1jbGllbnQ6c2VjcmV0');
+
+        return this.http.post(appConfig.apiUrlToken, body,
+            {headers:headersToSend})
+            .map((data:Response) => data.json());
     }
 }

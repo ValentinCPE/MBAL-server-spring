@@ -15,18 +15,9 @@ var HomeComponent = /** @class */ (function () {
     function HomeComponent(userService) {
         this.userService = userService;
         this.users = [];
-        this.currentUser = JSON.parse(localStorage.getItem('currentUser'));
     }
     HomeComponent.prototype.ngOnInit = function () {
-        this.loadAllUsers();
-    };
-    HomeComponent.prototype.deleteUser = function (_id) {
-        var _this = this;
-        this.userService.delete(_id).subscribe(function () { _this.loadAllUsers(); });
-    };
-    HomeComponent.prototype.loadAllUsers = function () {
-        var _this = this;
-        this.userService.getAll().subscribe(function (users) { _this.users = users; });
+        //this.loadAllUsers();
     };
     HomeComponent = __decorate([
         core_1.Component({
