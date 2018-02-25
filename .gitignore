@@ -1,4 +1,6 @@
 .idea/
-MBAL-client/.idea/
+MBAL-client/
 
 target/
+
+*.iml
