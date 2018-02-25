@@ -1,25 +1,35 @@
-﻿import { NgModule }      from '@angular/core';
-import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule }    from '@angular/forms';
-import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+﻿import { NgModule }      from '../node_modules/@angular/core';
+import { BrowserModule } from '../node_modules/@angular/platform-browser';
+import { FormsModule }    from '../node_modules/@angular/forms';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '../node_modules/@angular/common/http';
 
 import { AppComponent }  from './app.component';
 import { routing }        from './app.routing';
 
-import { AlertComponent } from './_directives/index';
-import { AuthGuard } from './_guards/index';
-import { JwtInterceptorProvider, ErrorInterceptorProvider } from './_helpers/index';
-import { AlertService, AuthenticationService, UserService } from './_services/index';
-import { HomeComponent } from './home/index';
-import { LoginComponent } from './login/index';
-import { RegisterComponent } from './register/index';
+import { AlertComponent } from './_directives';
+import { AuthGuard } from './_guards';
+import { JwtInterceptorProvider, ErrorInterceptorProvider } from './_helpers';
+import { AlertService, AuthenticationService, UserService } from './_services';
+import { HomeComponent } from './home';
+import { LoginComponent } from './login';
+import { RegisterComponent } from './register';
+
+import { JwtModule } from '@auth0/angular-jwt';
 
 @NgModule({
     imports: [
         BrowserModule,
         FormsModule,
         HttpClientModule,
-        routing
+        routing,
+      /*  JwtModule.forRoot({
+            config: {
+                tokenGetter: () => {
+                    return localStorage.getItem('auth_token');
+                },
+                whitelistedDomains: ['localhost:9000']
+            }
+        }), */
     ],
     declarations: [
         AppComponent,

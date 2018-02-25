@@ -13,29 +13,18 @@ var core_1 = require("@angular/core");
 var router_1 = require("@angular/router");
 var index_1 = require("../_services/index");
 var LoginComponent = /** @class */ (function () {
-    function LoginComponent(route, router, authenticationService, alertService) {
-        this.route = route;
+    function LoginComponent(userService, router) {
+        this.userService = userService;
         this.router = router;
-        this.authenticationService = authenticationService;
-        this.alertService = alertService;
         this.model = {};
         this.loading = false;
     }
-    LoginComponent.prototype.ngOnInit = function () {
-        // reset login status
-        this.authenticationService.logout();
-        // get return url from route parameters or default to '/'
-        this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
-    };
-    LoginComponent.prototype.login = function () {
+    LoginComponent.prototype.onSubmit = function (email, password) {
         var _this = this;
-        this.loading = true;
-        this.authenticationService.login(this.model.username, this.model.password)
-            .subscribe(function (data) {
-            _this.router.navigate([_this.returnUrl]);
-        }, function (error) {
-            _this.alertService.error(error);
-            _this.loading = false;
+        this.userService.login(email, password).subscribe(function (result) {
+            if (result) {
+                _this.router.navigate(['']);
+            }
         });
     };
     LoginComponent = __decorate([
@@ -43,10 +32,7 @@ var LoginComponent = /** @class */ (function () {
             moduleId: module.id,
             templateUrl: 'login.component.html'
         }),
-        __metadata("design:paramtypes", [router_1.ActivatedRoute,
-            router_1.Router,
-            index_1.AuthenticationService,
-            index_1.AlertService])
+        __metadata("design:paramtypes", [index_1.UserService, router_1.Router])
     ], LoginComponent);
     return LoginComponent;
 }());

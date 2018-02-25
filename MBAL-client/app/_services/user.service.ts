@@ -1,30 +1,36 @@
 ﻿import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { appConfig } from '../app.config';
-import { User } from '../_models/index';
-
 @Injectable()
 export class UserService {
-    constructor(private http: HttpClient) { }
+    private loggedIn = false;
 
-    getAll() {
-        return this.http.get<User[]>(appConfig.apiUrl + '/users');
+    constructor(private http: HttpClient) {
+        this.loggedIn = !!localStorage.getItem('auth_token');
     }
 
-    getById(_id: string) {
-        return this.http.get(appConfig.apiUrl + '/users/' + _id);
+    login(email:string, password:string) {
+        return this.http
+            .post(
+                '/login',
+                { email, password }
+            )
+            .map((res: any) => {
+                if (res.success) {
+                    localStorage.setItem('auth_token', res.auth_token);
+                    this.loggedIn = true;
+                }
+
+                return res.success;
+            });
     }
 
-    create(user: User) {
-        return this.http.post(appConfig.apiUrl + '/users/register', user);
+    logout() {
+        localStorage.removeItem('auth_token');
+        this.loggedIn = false;
     }
 
-    update(user: User) {
-        return this.http.put(appConfig.apiUrl + '/users/' + user._id, user);
-    }
-
-    delete(_id: string) {
-        return this.http.delete(appConfig.apiUrl + '/users/' + _id);
+    isLoggedIn() {
+        return this.loggedIn;
     }
 }
