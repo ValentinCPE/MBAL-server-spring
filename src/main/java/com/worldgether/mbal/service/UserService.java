@@ -10,13 +10,15 @@ import java.util.List;
 @Service
 public interface UserService {
 
+    String connect(String username,String password);
+
     String createUser(String nom, String prenom, String mail, String password, String numero_telephone, String role);
 
-    String setTokenPhoneForUser(String username, String token);
+    String setTokenPhoneForUser(String session_id, String token);
 
     String deleteUser(String username);
 
-    String updateUser(String nom, String prenom, String mail, String password, String numero_telephone);
+    String updateUser(String nom, String prenom, String session_id, String password, String numero_telephone);
 
     String checkIfPasswordCorrect(String username, String password);
 

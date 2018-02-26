@@ -1,7 +1,5 @@
 package com.worldgether.mbal.controller;
 
-import com.worldgether.mbal.model.Family;
-import com.worldgether.mbal.model.Role;
 import com.worldgether.mbal.model.User;
 import com.worldgether.mbal.repository.UserRepository;
 import com.worldgether.mbal.service.FamilyService;
@@ -27,6 +25,20 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
+    @PostMapping("/login")
+    public ResponseEntity<String> connect(@RequestParam("username") String username,
+                                          @RequestParam("password") String password){
+
+        String sessionId = userService.connect(username,password);
+
+        if(sessionId == null){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(sessionId,HttpStatus.OK);
+
+    }
+
     @PostMapping("/create")
     public ResponseEntity<String> createUser(@RequestParam("name") String name,
                                            @RequestParam("prenom") String prenom,
@@ -46,10 +58,10 @@ public class UserController {
     }
 
     @PostMapping("/setTokenForUser")
-    public ResponseEntity<String> setTokenForUser(@RequestParam("username") String username,
+    public ResponseEntity<String> setTokenForUser(@RequestParam("session_id") String session_id,
                                                 @RequestParam("token_phone") String token_phone){
 
-        String response = userService.setTokenPhoneForUser(username,token_phone);
+        String response = userService.setTokenPhoneForUser(session_id,token_phone);
 
         if(response == null){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -75,11 +87,11 @@ public class UserController {
     @PostMapping("/updateUser")
     public ResponseEntity<String> updateUser(@RequestParam("name") String name,
                                            @RequestParam("prenom") String prenom,
-                                           @RequestParam("mail") String mail,
+                                           @RequestParam("session_id") String session_id,
                                            @RequestParam("password") String password,
                                            @RequestParam("numero_telephone") String num_telephone){
 
-        String response = userService.updateUser(name,prenom,mail,password,num_telephone);
+        String response = userService.updateUser(name,prenom,session_id,password,num_telephone);
 
         if(response == null){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -104,11 +116,11 @@ public class UserController {
     }
 
     @PostMapping("/setFamilyForUser")
-    public ResponseEntity<String> setFamilyForUser(@RequestParam("username") String username,
+    public ResponseEntity<String> setFamilyForUser(@RequestParam("session_id") String session_id,
                                                    @RequestParam("name_family") String name_family,
                                                    @RequestParam("password_family") String password_family){
 
-        String response = familyService.setFamilyForUser(username,name_family,password_family);
+        String response = familyService.setFamilyForUser(session_id,name_family,password_family);
 
         if(response == null){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -10,7 +10,9 @@ public enum Response {
     PASSWORD_NOT_CORRECT ("The password is not correct !"),
     DELETION_SUCCESSFUL ("Deleted !"),
     USER_ADDED_TO_FAMILY ("The family has been added to this user !"),
-    FAMILY_ALREADY_EXISTS ("This family already exists !");
+    FAMILY_ALREADY_EXISTS ("This family already exists !"),
+    NOT_LOGGED_IN ("Not logged in !"),
+    SESSION_DOESNT_EXIST ("The session doesn't exist !");
 
 
     private String message = "";

@@ -3,10 +3,9 @@ package com.worldgether.mbal.service.Impl;
 
 import com.worldgether.mbal.model.Response;
 import com.worldgether.mbal.model.Role;
+import com.worldgether.mbal.model.Sessions;
 import com.worldgether.mbal.model.User;
-import com.worldgether.mbal.repository.FamilyRepository;
-import com.worldgether.mbal.repository.RoleRepository;
-import com.worldgether.mbal.repository.UserRepository;
+import com.worldgether.mbal.repository.*;
 import com.worldgether.mbal.service.PasswordService;
 import com.worldgether.mbal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +31,45 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private Evt_messageRepository evt_messageRepository;
+
+    @Autowired
+    private SessionsRepository sessionsRepository;
+
+
+    @Override
+    public String connect(String username, String password) {
+
+        if(username == null || password == null){
+            return null;
+        }
+
+        User user = this.getUser(username);
+
+        if(user == null){
+            return Response.NOT_LOGGED_IN.toString();
+        }
+
+        if(!this.checkIfPasswordCorrect(username,password).equals(Response.OK.toString())){
+            return Response.PASSWORD_NOT_CORRECT.toString();
+        }
+
+        Sessions newSession = new Sessions();
+
+        newSession.setUser(user);
+
+        if(user.getFamily() != null) {
+            newSession.setFamily(user.getFamily());
+        }
+
+        newSession.setConnectTime(new Date());
+
+        this.sessionsRepository.save(newSession);
+
+        return newSession.getSession_id();
+
+    }
 
     @Override
     public String createUser(String nom, String prenom, String mail, String password, String numero_telephone, String role) {
@@ -68,15 +106,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String setTokenPhoneForUser(String username, String token) {
+    public String setTokenPhoneForUser(String session_id, String token) {
 
         boolean isUser = false;
 
-        if(username == null || token == null){
+        if(session_id == null || token == null){
             return null;
         }
 
-        User user = userRepository.findByMail(username);
+        Sessions session = sessionsRepository.findOne(session_id);
+
+        if(session == null){
+            return Response.SESSION_DOESNT_EXIST.toString();
+        }
+
+        User user = session.getUser();
 
         if(user == null){
             return Response.USER_ID_DOESNT_EXIST.toString();
@@ -121,35 +165,37 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String updateUser(String nom, String prenom, String mail, String password, String numero_telephone) {
+    public String updateUser(String nom, String prenom, String session_id, String password, String numero_telephone) {
 
-        if(mail == null){
+        if(session_id == null){
             return null;
         }
 
-        User userToUpdate = userRepository.findByMail(mail);
+        Sessions session = sessionsRepository.findOne(session_id);
+
+        if(session == null){
+            return Response.SESSION_DOESNT_EXIST.toString();
+        }
+
+        User userToUpdate = session.getUser();
 
         if(userToUpdate == null){
             return Response.USER_ID_DOESNT_EXIST.toString();
         }
 
-        if(nom != ""){
+        if(!nom.equals("")){
             userToUpdate.setNom(nom);
         }
 
-        if(prenom != ""){
+        if(!prenom.equals("")){
             userToUpdate.setPrenom(prenom);
         }
 
-        if(mail != ""){
-            userToUpdate.setMail(mail);
-        }
-
-        if(password != ""){
+        if(!password.equals("")){
             userToUpdate.setPassword(passwordEncoder.encode(password));
         }
 
-        if(numero_telephone != ""){
+        if(!numero_telephone.equals("")){
             userToUpdate.setNumero_telephone(numero_telephone);
         }
 
