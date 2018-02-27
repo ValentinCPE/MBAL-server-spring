@@ -2,8 +2,10 @@ package com.worldgether.mbal.service.Impl;
 
 import com.worldgether.mbal.model.Family;
 import com.worldgether.mbal.model.Response;
+import com.worldgether.mbal.model.Sessions;
 import com.worldgether.mbal.model.User;
 import com.worldgether.mbal.repository.FamilyRepository;
+import com.worldgether.mbal.repository.SessionsRepository;
 import com.worldgether.mbal.repository.UserRepository;
 import com.worldgether.mbal.service.FamilyService;
 import com.worldgether.mbal.service.PasswordService;
@@ -26,12 +28,15 @@ public class FamilyServiceImpl implements FamilyService {
     private UserRepository userRepository;
 
     @Autowired
+    private SessionsRepository sessionsRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public String createFamily(String username, String name, String password) {
+    public String createFamily(String session_id, String name, String password) {
 
-        if(username == null || name == null || password == null){
+        if(session_id == null || name == null || password == null){
             return null;
         }
 
@@ -44,7 +49,9 @@ public class FamilyServiceImpl implements FamilyService {
         family.setPassword(passwordEncoder.encode(password));
         family.setCreation_date(new Timestamp(new Date().getTime()));
 
-        User user = userRepository.findByMail(username);
+        Sessions session = sessionsRepository.findOne(session_id);
+
+        User user = session.getUser();
 
         if(user == null){
             return Response.USER_ID_DOESNT_EXIST.toString();
@@ -80,25 +87,54 @@ public class FamilyServiceImpl implements FamilyService {
     } */
 
     @Override
-    public String updatePasswordFamily(String name, String old_password, String new_password) {
+    public String updatePasswordFamily(String session_id, String new_password) {
 
-        if(name == null || old_password == null || new_password == null){
+        if(session_id == null || new_password == null){
             return null;
         }
 
-        Family family = familyRepository.findByName(name);
+        Sessions session = sessionsRepository.findOne(session_id);
+
+        if(session == null){
+            return null;
+        }
+
+        Family family = session.getFamily();
 
         if(family == null){
             return Response.FAMILY_ID_DOESNT_EXIST.toString();
         }
 
-        if(!passwordEncoder.matches(old_password,family.getPassword())){
+    /*    if(!passwordEncoder.matches(old_password,family.getPassword())){
             return Response.PASSWORD_NOT_CORRECT.toString();
-        }
+        } */
 
         family.setPassword(passwordEncoder.encode(new_password));
 
         familyRepository.save(family);
+
+        return Response.OK.toString();
+
+    }
+
+    @Override
+    public String checkIfPasswordFamilyCorrect(String session_id, String password) {
+
+        if(session_id == null || password == null){
+            return null;
+        }
+
+        Sessions session = sessionsRepository.findOne(session_id);
+
+        if(session == null){
+            return Response.SESSION_DOESNT_EXIST.toString();
+        }
+
+        Family family = session.getFamily();
+
+        if(!passwordEncoder.matches(password,family.getPassword())){
+            return Response.PASSWORD_NOT_CORRECT.toString();
+        }
 
         return Response.OK.toString();
 

@@ -39,6 +39,19 @@ public class UserController {
 
     }
 
+    @GetMapping("/logout/{session_id}")
+    public ResponseEntity<String> logout(@PathVariable("session_id") String session_id){
+
+        String response = userService.logout(session_id);
+
+        if(response == null){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(response,HttpStatus.OK);
+
+    }
+
     @PostMapping("/create")
     public ResponseEntity<String> createUser(@RequestParam("name") String name,
                                            @RequestParam("prenom") String prenom,

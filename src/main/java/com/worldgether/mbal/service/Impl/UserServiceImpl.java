@@ -72,6 +72,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String logout(String session_id) {
+
+        if(session_id == null){
+            return null;
+        }
+
+        Sessions sessions = sessionsRepository.findOne(session_id);
+
+        if(sessions == null){
+            return Response.SESSION_DOESNT_EXIST.toString();
+        }
+
+        sessionsRepository.delete(sessions);
+
+        return Response.OK.toString();
+
+    }
+
+    @Override
     public String createUser(String nom, String prenom, String mail, String password, String numero_telephone, String role) {
 
         if(nom == null || prenom == null || mail == null || password == null || numero_telephone == null || role == null){

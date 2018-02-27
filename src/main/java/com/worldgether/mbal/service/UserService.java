@@ -12,6 +12,8 @@ public interface UserService {
 
     String connect(String username,String password);
 
+    String logout(String session_id);
+
     String createUser(String nom, String prenom, String mail, String password, String numero_telephone, String role);
 
     String setTokenPhoneForUser(String session_id, String token);
