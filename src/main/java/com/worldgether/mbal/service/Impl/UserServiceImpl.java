@@ -97,7 +97,9 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        if(userRepository.findByMail(mail) != null){
+        User user = userRepository.findByMail(mail);
+
+        if(user != null){
             return Response.MAIL_ALREADY_EXISTS.toString();
         }
 
