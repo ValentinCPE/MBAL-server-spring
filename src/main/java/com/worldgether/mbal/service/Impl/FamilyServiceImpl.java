@@ -49,7 +49,11 @@ public class FamilyServiceImpl implements FamilyService {
         family.setPassword(passwordEncoder.encode(password));
         family.setCreation_date(new Timestamp(new Date().getTime()));
 
-        Sessions session = sessionsRepository.findOne(session_id);
+        Sessions session = sessionsRepository.findByUuid(session_id);
+
+        if(session == null){
+            return null;
+        }
 
         User user = session.getUser();
 
@@ -93,7 +97,7 @@ public class FamilyServiceImpl implements FamilyService {
             return null;
         }
 
-        Sessions session = sessionsRepository.findOne(session_id);
+        Sessions session = sessionsRepository.findByUuid(session_id);
 
         if(session == null){
             return null;
@@ -124,7 +128,7 @@ public class FamilyServiceImpl implements FamilyService {
             return null;
         }
 
-        Sessions session = sessionsRepository.findOne(session_id);
+        Sessions session = sessionsRepository.findByUuid(session_id);
 
         if(session == null){
             return Response.SESSION_DOESNT_EXIST.toString();

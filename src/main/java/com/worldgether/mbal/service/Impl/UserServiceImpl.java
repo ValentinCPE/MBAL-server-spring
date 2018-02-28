@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -57,6 +58,8 @@ public class UserServiceImpl implements UserService {
 
         Sessions newSession = new Sessions();
 
+        newSession.setUuid(UUID.randomUUID().toString());
+
         newSession.setUser(user);
 
         if(user.getFamily() != null) {
@@ -67,7 +70,7 @@ public class UserServiceImpl implements UserService {
 
         this.sessionsRepository.save(newSession);
 
-        return newSession.getSession_id();
+        return newSession.getUuid();
 
     }
 
@@ -78,7 +81,7 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        Sessions sessions = sessionsRepository.findOne(session_id);
+        Sessions sessions = sessionsRepository.findByUuid(session_id);
 
         if(sessions == null){
             return Response.SESSION_DOESNT_EXIST.toString();
@@ -135,7 +138,7 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        Sessions session = sessionsRepository.findOne(session_id);
+        Sessions session = sessionsRepository.findByUuid(session_id);
 
         if(session == null){
             return Response.SESSION_DOESNT_EXIST.toString();
@@ -192,7 +195,7 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        Sessions session = sessionsRepository.findOne(session_id);
+        Sessions session = sessionsRepository.findByUuid(session_id);
 
         if(session == null){
             return Response.SESSION_DOESNT_EXIST.toString();

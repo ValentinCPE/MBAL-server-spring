@@ -1,12 +1,17 @@
 package com.worldgether.mbal.controller;
 
+import com.worldgether.mbal.model.Family;
 import com.worldgether.mbal.model.User;
+import com.worldgether.mbal.repository.SessionsRepository;
 import com.worldgether.mbal.repository.UserRepository;
 import com.worldgether.mbal.service.FamilyService;
 import com.worldgether.mbal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,7 +28,19 @@ public class UserController {
     private FamilyService familyService;
 
     @Autowired
-    private UserRepository userRepository;
+    private SessionsRepository sessionsRepository;
+
+    @MessageMapping("/infosChanged/{session_id}/{family_id}")
+    @SendTo("/alert/infosChanged/{family_id}")
+    public String alertFamilyChanged(@DestinationVariable String session_id,
+                                     @DestinationVariable String family_id) throws Exception {
+
+        Thread.sleep(3000); // simulated delay
+
+        User user = sessionsRepository.findOne(session_id).getUser();
+
+        return "Les informations concernant votre famille viennent d'être modifiées par " + user.getPrenom();
+    }
 
     @PostMapping("/login")
     public ResponseEntity<String> connect(@RequestParam("username") String username,
@@ -143,7 +160,7 @@ public class UserController {
 
     }
 
-    @GetMapping("/getUserByName/{username}")
+    @GetMapping("/getUserByName/{username}/")
     public ResponseEntity<User> getUserByName(@PathVariable("username") String username){
 
         User user = userService.getUser(username);

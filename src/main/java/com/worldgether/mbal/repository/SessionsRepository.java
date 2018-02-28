@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface SessionsRepository extends MongoRepository<Sessions, String> {
 
-    @Override
-    Sessions findOne(String s);
+    Sessions findByUuid(String uuid);
 
 }

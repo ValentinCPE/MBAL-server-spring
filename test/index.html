@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello WebSocket</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.0.3/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script type="text/javascript">
+        var stompClient = null;
+        function setConnected(connected) {
+            document.getElementById('connect').disabled = connected;
+            document.getElementById('disconnect').disabled = !connected;
+        }
+        function connect() {
+            var familyid = document.getElementById('familyid').value;
+            var socket = new SockJS('http://localhost:8080/webSocketInit');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function(frame) {
+                setConnected(true);
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/alert/infosChanged/'+familyid, function(data){
+                    alert(data);
+                });
+            });
+        }
+        function disconnect() {
+            if (stompClient != null) {
+                stompClient.disconnect();
+            }
+            setConnected(false);
+            console.log("Disconnected");
+        }
+        function sendAlert() {
+            var familyid = document.getElementById('familyid').value;
+            var sessionid = document.getElementById('sessionid').value;
+            stompClient.send("/api/user/infosChanged/"+sessionid+"/"+familyid, {}, {});
+        }
+    </script>
+</head>
+<body onload="disconnect()">
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+<div>
+    <div>
+        <button id="connect">Connect</button>
+        <label>Family_id to subscribe</label><input type="text" id="familyid" />
+        <button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
+    </div>
+    <div id="conversationDiv">
+        <label>My session ID</label><input type="text" id="sessionid" />
+        <button id="sendAlert" onclick="sendAlert();">Send Alert</button>
+    </div>
+</div>
+</body>
+</html>

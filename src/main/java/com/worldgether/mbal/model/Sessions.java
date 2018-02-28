@@ -18,7 +18,9 @@ public class Sessions {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Indexed
-    private String session_id;
+    private String id;
+
+    private String uuid;
 
     private User user;
 
