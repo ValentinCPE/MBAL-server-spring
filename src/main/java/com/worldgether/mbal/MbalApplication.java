@@ -14,11 +14,13 @@ import org.springframework.boot.web.support.SpringBootServletInitializer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
 
+@EnableResourceServer
 @SpringBootApplication(scanBasePackages = {"com.worldgether.mbal"})
 public class MbalApplication extends SpringBootServletInitializer {
 
