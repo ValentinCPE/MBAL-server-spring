@@ -21,6 +21,6 @@ public interface FamilyService {
 
     List<User> getUsersByFamily(String name);
 
-    String setFamilyForUser(String username, String name_family, String password_family);
+    String setFamilyForUser(String session_id, String name_family, String password_family);
 
 }

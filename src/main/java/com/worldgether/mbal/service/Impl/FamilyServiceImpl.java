@@ -49,7 +49,7 @@ public class FamilyServiceImpl implements FamilyService {
         family.setPassword(passwordEncoder.encode(password));
         family.setCreation_date(new Timestamp(new Date().getTime()));
 
-        Sessions session = sessionsRepository.findByUuid(session_id);
+        Sessions session = sessionsRepository.findById(session_id);
 
         if(session == null){
             return null;
@@ -97,13 +97,13 @@ public class FamilyServiceImpl implements FamilyService {
             return null;
         }
 
-        Sessions session = sessionsRepository.findByUuid(session_id);
+        Sessions session = sessionsRepository.findById(session_id);
 
         if(session == null){
             return null;
         }
 
-        Family family = session.getFamily();
+        Family family = session.getUser().getFamily();
 
         if(family == null){
             return Response.FAMILY_ID_DOESNT_EXIST.toString();
@@ -128,13 +128,13 @@ public class FamilyServiceImpl implements FamilyService {
             return null;
         }
 
-        Sessions session = sessionsRepository.findByUuid(session_id);
+        Sessions session = sessionsRepository.findById(session_id);
 
         if(session == null){
             return Response.SESSION_DOESNT_EXIST.toString();
         }
 
-        Family family = session.getFamily();
+        Family family = session.getUser().getFamily();
 
         if(!passwordEncoder.matches(password,family.getPassword())){
             return Response.PASSWORD_NOT_CORRECT.toString();
@@ -167,7 +167,7 @@ public class FamilyServiceImpl implements FamilyService {
 
         familyRepository.delete(family);
 
-        return Response.DELETION_SUCCESSFUL.toString();
+        return Response.OK.toString();
 
     }
 
@@ -212,9 +212,9 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public String setFamilyForUser(String username, String name_family, String password_family) {
+    public String setFamilyForUser(String session_id, String name_family, String password_family) {
 
-        if(username == null || name_family == null || password_family == null){
+        if(session_id == null || name_family == null || password_family == null){
             return null;
         }
 
@@ -228,7 +228,13 @@ public class FamilyServiceImpl implements FamilyService {
             return Response.PASSWORD_NOT_CORRECT.toString();
         }
 
-        User user = userRepository.findByMail(username);
+        Sessions session = sessionsRepository.findById(session_id);
+
+        if(session == null){
+            return Response.SESSION_DOESNT_EXIST.toString();
+        }
+
+        User user = userRepository.findById(session.getUser().getId());
 
         if(user == null){
             return Response.USER_ID_DOESNT_EXIST.toString();
@@ -238,7 +244,7 @@ public class FamilyServiceImpl implements FamilyService {
 
         userRepository.save(user);
 
-        return Response.USER_ADDED_TO_FAMILY.toString();
+        return Response.OK.toString();
     }
 
 }

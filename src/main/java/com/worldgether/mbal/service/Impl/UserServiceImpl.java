@@ -13,8 +13,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -56,21 +59,23 @@ public class UserServiceImpl implements UserService {
             return Response.PASSWORD_NOT_CORRECT.toString();
         }
 
+        Sessions sessionExistante = sessionsRepository.findByUser(user);
+
+        if(sessionExistante != null){
+            return Response.SESSION_ALREADY_EXISTS.toString();
+        }
+
         Sessions newSession = new Sessions();
 
-        newSession.setUuid(UUID.randomUUID().toString());
+        newSession.setId(UUID.randomUUID().toString());
 
         newSession.setUser(user);
 
-        if(user.getFamily() != null) {
-            newSession.setFamily(user.getFamily());
-        }
-
-        newSession.setConnectTime(new Date());
+        newSession.setConnectTime(new Timestamp(new Date().getTime()));
 
         this.sessionsRepository.save(newSession);
 
-        return newSession.getUuid();
+        return newSession.getId();
 
     }
 
@@ -81,7 +86,7 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        Sessions sessions = sessionsRepository.findByUuid(session_id);
+        Sessions sessions = sessionsRepository.findById(session_id);
 
         if(sessions == null){
             return Response.SESSION_DOESNT_EXIST.toString();
@@ -114,14 +119,7 @@ public class UserServiceImpl implements UserService {
         newUser.setPassword(passwordEncoder.encode(password));
         newUser.setCreation_date(new Timestamp(new Date().getTime()));
         newUser.setNumero_telephone(numero_telephone);
-
-        Role roleExists = roleRepository.findByName(role);
-
-        if(roleExists == null){
-            newUser.setRoles(Arrays.asList(new Role(role)));
-        }else{
-            newUser.setRoles(Arrays.asList(roleExists));
-        }
+        newUser.setRoles(Arrays.asList(new Role(role)));
 
         userRepository.save(newUser);
 
@@ -138,7 +136,7 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        Sessions session = sessionsRepository.findByUuid(session_id);
+        Sessions session = sessionsRepository.findById(session_id);
 
         if(session == null){
             return Response.SESSION_DOESNT_EXIST.toString();
@@ -184,7 +182,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.delete(user);
 
-        return Response.DELETION_SUCCESSFUL.toString();
+        return Response.OK.toString();
 
     }
 
@@ -195,7 +193,7 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        Sessions session = sessionsRepository.findByUuid(session_id);
+        Sessions session = sessionsRepository.findById(session_id);
 
         if(session == null){
             return Response.SESSION_DOESNT_EXIST.toString();

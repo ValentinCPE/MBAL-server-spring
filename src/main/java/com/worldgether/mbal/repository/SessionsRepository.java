@@ -1,10 +1,13 @@
 package com.worldgether.mbal.repository;
 
 import com.worldgether.mbal.model.Sessions;
-import org.springframework.data.mongodb.repository.MongoRepository;
+import com.worldgether.mbal.model.User;
+import org.springframework.data.repository.CrudRepository;
 
-public interface SessionsRepository extends MongoRepository<Sessions, String> {
+public interface SessionsRepository extends CrudRepository<Sessions,String> {
 
-    Sessions findByUuid(String uuid);
+    Sessions findById(String id);
+
+    Sessions findByUser(User user);
 
 }

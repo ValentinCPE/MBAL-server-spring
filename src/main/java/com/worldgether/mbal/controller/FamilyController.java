@@ -20,7 +20,7 @@ public class FamilyController {
     @Autowired
     private FamilyRepository familyRepository;
 
-    @PostMapping("/createFamily")
+    @RequestMapping(value = "/createFamily", method = RequestMethod.POST)
     public ResponseEntity<String> createFamily(@RequestParam("familyname") String name,
                                               @RequestParam("password") String password,
                                               @RequestParam("session_id") String session_id){
@@ -35,7 +35,7 @@ public class FamilyController {
 
     }
 
-    @PostMapping("/updatePasswordFamily")
+    @RequestMapping(value = "/updatePasswordFamily", method = RequestMethod.POST)
     public ResponseEntity<String> updatePasswordFamily(@RequestParam("session_id") String session_id,
                                                    @RequestParam("new_password") String newPassword){
 
@@ -49,7 +49,7 @@ public class FamilyController {
 
     }
 
-    @PostMapping("/checkIfPasswordFamilyCorrect")
+    @RequestMapping(value = "/checkIfPasswordFamilyCorrect", method = RequestMethod.POST)
     public ResponseEntity<String> checkIfPasswordFamilyCorrect(@RequestParam("session_id") String session_id,
                                                                @RequestParam("password") String password){
 
@@ -63,7 +63,7 @@ public class FamilyController {
 
     }
 
-    @PostMapping("/deleteFamily")
+    @RequestMapping(value = "/deleteFamily", method = RequestMethod.POST)
     public ResponseEntity<String> deleteFamily(@RequestParam("name") String name){
 
         String response = familyService.deleteFamily(name);
@@ -76,7 +76,7 @@ public class FamilyController {
 
     }
 
-    @GetMapping("/getFamilyByName/{name}")
+    @RequestMapping(value = "/getFamilyByName/{name}", method = RequestMethod.GET, produces = { "application/json" })
     public ResponseEntity<Family> getFamily(@PathVariable("name") String name){
 
         Family family = familyService.getFamily(name);

@@ -2,6 +2,8 @@ package com.worldgether.mbal.controller;
 
 import com.worldgether.mbal.model.Family;
 import com.worldgether.mbal.model.User;
+import com.worldgether.mbal.model.dto.FamilyDto;
+import com.worldgether.mbal.model.dto.UserDto;
 import com.worldgether.mbal.repository.SessionsRepository;
 import com.worldgether.mbal.repository.UserRepository;
 import com.worldgether.mbal.service.FamilyService;
@@ -37,12 +39,12 @@ public class UserController {
 
         Thread.sleep(3000); // simulated delay
 
-        User user = sessionsRepository.findOne(session_id).getUser();
+        User user = sessionsRepository.findById(session_id).getUser();
 
         return "Les informations concernant votre famille viennent d'être modifiées par " + user.getPrenom();
     }
 
-    @PostMapping("/login")
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<String> connect(@RequestParam("username") String username,
                                           @RequestParam("password") String password){
 
@@ -56,7 +58,7 @@ public class UserController {
 
     }
 
-    @GetMapping("/logout/{session_id}")
+    @RequestMapping(value = "/logout/{session_id}", method = RequestMethod.GET)
     public ResponseEntity<String> logout(@PathVariable("session_id") String session_id){
 
         String response = userService.logout(session_id);
@@ -69,7 +71,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/create")
+    @RequestMapping(value = "/create", method = RequestMethod.POST)
     public ResponseEntity<String> createUser(@RequestParam("name") String name,
                                            @RequestParam("prenom") String prenom,
                                            @RequestParam("mail") String mail,
@@ -87,7 +89,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/setTokenForUser")
+    @RequestMapping(value = "/setTokenForUser", method = RequestMethod.POST)
     public ResponseEntity<String> setTokenForUser(@RequestParam("session_id") String session_id,
                                                 @RequestParam("token_phone") String token_phone){
 
@@ -101,7 +103,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/deleteUser")
+    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
     public ResponseEntity<String> deleteUser(@RequestParam("username") String username){
 
         String response = userService.deleteUser(username);
@@ -114,7 +116,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/updateUser")
+    @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
     public ResponseEntity<String> updateUser(@RequestParam("name") String name,
                                            @RequestParam("prenom") String prenom,
                                            @RequestParam("session_id") String session_id,
@@ -131,7 +133,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/checkIfPasswordCorrect")
+    @RequestMapping(value = "/checkIfPasswordCorrect", method = RequestMethod.POST)
     public ResponseEntity<String> checkIfPasswordCorrect(@RequestParam("username") String username,
                                                           @RequestParam("password") String password){
 
@@ -145,7 +147,7 @@ public class UserController {
 
     }
 
-    @PostMapping("/setFamilyForUser")
+    @RequestMapping(value = "/setFamilyForUser", method = RequestMethod.POST)
     public ResponseEntity<String> setFamilyForUser(@RequestParam("session_id") String session_id,
                                                    @RequestParam("name_family") String name_family,
                                                    @RequestParam("password_family") String password_family){
@@ -160,29 +162,31 @@ public class UserController {
 
     }
 
-    @GetMapping("/getUserByName/{username}/")
-    public ResponseEntity<User> getUserByName(@PathVariable("username") String username){
+    @RequestMapping(value = "/getUserByName/{username}/", method = RequestMethod.GET, produces = { "application/json" })
+    public ResponseEntity<UserDto> getUserByName(@PathVariable("username") String username){
 
         User user = userService.getUser(username);
 
         if(user == null){
-            return new ResponseEntity<User>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<UserDto>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<User>(user,HttpStatus.OK);
+        return new ResponseEntity<UserDto>(new UserDto(user.getNom(),user.getPrenom(),user.getMail(),
+                user.getCreation_date(), user.getNumero_telephone(), user.getToken_telephone(),
+                new FamilyDto(user.getFamily().getName(),user.getFamily().getCreation_date())),HttpStatus.OK);
 
     }
 
-    @GetMapping("/getUsersByFamilyName/{family_name}")
-    public ResponseEntity<List<User>> getUsersByFamilyId(@PathVariable("family_name") String family_name){
+    @RequestMapping(value = "/getUsersByFamilyName/{family_name}", method = RequestMethod.GET, produces = { "application/json" })
+    public ResponseEntity<List<UserDto>> getUsersByFamilyId(@PathVariable("family_name") String family_name){
 
         List<User> users = familyService.getUsersByFamily(family_name);
 
         if (users == null){
-            return new ResponseEntity<List<User>>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<List<UserDto>>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<List<User>>(users,HttpStatus.OK);
+        return new ResponseEntity<List<UserDto>>(UserDto.getUsersDtoByList(users),HttpStatus.OK);
 
     }
 
