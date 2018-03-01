@@ -7,31 +7,6 @@
 ###Methodes
 
 **LOGIN**
-```
- /user/login
-``` 
-  _Post Param_ : username - password
-  
-  _Return_ : Session_ID
-  
-  _Error_ : INTERNAL_SERVER_ERROR
-     
-  
-**LOGOUT**
-
-```
- **/user/logout/{session_id}**
-  
-  _Path Get Param_ : session_id
-  
-  _Return_ : "OK"
-  _Error_ :  INTERNAL_SERVER_ERROR
-  
-```
-   
-   
-   
-**LOGIN**
 ----
 
 * **URL**
