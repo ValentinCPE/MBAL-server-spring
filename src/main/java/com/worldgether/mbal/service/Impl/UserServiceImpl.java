@@ -273,7 +273,7 @@ public class UserServiceImpl implements UserService {
         }
 
         if(passwordEncoder.matches(password,user.getPassword())){
-            log.info(LoggerMessage.getLog(LoggerMessage.PASSWORD_USER_CORRECT.toString(),"IFPASSWORDCORRECT"));
+            log.info(LoggerMessage.getLog(LoggerMessage.PASSWORD_USER_CORRECT.toString(),"IFPASSWORDCORRECT",user.getMail()));
             return Response.OK.toString();
         }else{
             log.info(LoggerMessage.getLog(LoggerMessage.PASSWORD_NOT_CORRECT.toString(),"IFPASSWORDCORRECT",username));

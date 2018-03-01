@@ -1,6 +1,8 @@
 package com.worldgether.mbal.controller;
 
 import com.worldgether.mbal.model.Family;
+import com.worldgether.mbal.model.Response;
+import com.worldgether.mbal.model.Sessions;
 import com.worldgether.mbal.model.User;
 import com.worldgether.mbal.model.dto.FamilyDto;
 import com.worldgether.mbal.model.dto.UserDto;
@@ -34,14 +36,20 @@ public class UserController {
 
     @MessageMapping("/infosChanged/{session_id}/{family_id}")
     @SendTo("/alert/infosChanged/{family_id}")
-    public String alertFamilyChanged(@DestinationVariable String session_id,
+    public ResponseEntity<String> alertFamilyChanged(@DestinationVariable String session_id,
                                      @DestinationVariable String family_id) throws Exception {
 
-        Thread.sleep(3000); // simulated delay
+        if(session_id == null) return new ResponseEntity<>(Response.SESSION_DOESNT_EXIST.toString(),HttpStatus.INTERNAL_SERVER_ERROR);
 
-        User user = sessionsRepository.findById(session_id).getUser();
+        Sessions session = sessionsRepository.findById(session_id);
 
-        return "Les informations concernant votre famille viennent d'être modifiées par " + user.getPrenom();
+        if(session == null) return new ResponseEntity<>(Response.SESSION_DOESNT_EXIST.toString(),HttpStatus.INTERNAL_SERVER_ERROR);
+
+        User user = session.getUser();
+
+        if(user == null) return new ResponseEntity<>(Response.SESSION_DOESNT_EXIST.toString(),HttpStatus.INTERNAL_SERVER_ERROR);
+
+        return new ResponseEntity<>("Les informations concernant votre famille viennent d'être modifiées par " + user.getPrenom(),HttpStatus.OK);
     }
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
