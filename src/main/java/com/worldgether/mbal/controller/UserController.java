@@ -1,13 +1,11 @@
 package com.worldgether.mbal.controller;
 
-import com.worldgether.mbal.model.Family;
 import com.worldgether.mbal.model.Response;
 import com.worldgether.mbal.model.Sessions;
 import com.worldgether.mbal.model.User;
 import com.worldgether.mbal.model.dto.FamilyDto;
 import com.worldgether.mbal.model.dto.UserDto;
 import com.worldgether.mbal.repository.SessionsRepository;
-import com.worldgether.mbal.repository.UserRepository;
 import com.worldgether.mbal.service.FamilyService;
 import com.worldgether.mbal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +16,8 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -85,7 +85,9 @@ public class UserController {
                                            @RequestParam("mail") String mail,
                                            @RequestParam("password") String password,
                                            @RequestParam("num_tel") String numero_telephone,
-                                           @RequestParam("role") String role) {
+                                           @RequestParam("role") String role,
+                                           @RequestParam("file") MultipartFile file,
+                                           RedirectAttributes redirectAttributes) {
 
         String response = userService.createUser(name,prenom,mail,password,numero_telephone,role);
 

@@ -4,28 +4,34 @@ import com.worldgether.mbal.Security.CustomUserDetails;
 import com.worldgether.mbal.model.Role;
 import com.worldgether.mbal.model.User;
 import com.worldgether.mbal.repository.UserRepository;
-import com.worldgether.mbal.service.PasswordService;
-import com.worldgether.mbal.service.UserService;
+import com.worldgether.mbal.service.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
+import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
 
 @EnableResourceServer
 @SpringBootApplication(scanBasePackages = {"com.worldgether.mbal"})
-public class MbalApplication extends SpringBootServletInitializer {
+public class MbalApplication extends SpringBootServletInitializer implements CommandLineRunner {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+	@Resource
+	StorageService storageService;
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
@@ -36,7 +42,11 @@ public class MbalApplication extends SpringBootServletInitializer {
 		SpringApplication.run(MbalApplication.class, args);
 	}
 
-
+	@Override
+	public void run(String... args) throws Exception {
+		storageService.deleteAll();
+		storageService.init();
+	}
 
 	/**
 	 * Password grants are switched on by injecting an AuthenticationManager.

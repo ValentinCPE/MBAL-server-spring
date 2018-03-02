@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello WebSocket</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.0.3/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
+    <script type="text/javascript">
+        var stompClient = null;
+        function setConnected(connected) {
+            document.getElementById('connect').disabled = connected;
+            document.getElementById('disconnect').disabled = !connected;
+        }
+        function connect() {
+            var familyid = document.getElementById('familyid').value;
+            var socket = new SockJS('http://localhost:8080/webSocketInit');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function(frame) {
+                setConnected(true);
+                console.log('Connected: ' + frame);
+                stompClient.subscribe('/alert/infosChanged/'+familyid, function(data){
+                    alert(data);
+                });
+            });
+        }
+        function disconnect() {
+            if (stompClient != null) {
+                stompClient.disconnect();
+            }
+            setConnected(false);
+            console.log("Disconnected");
+        }
+        function sendAlert() {
+            var familyid = document.getElementById('familyid').value;
+            var sessionid = document.getElementById('sessionid').value;
+            stompClient.send("/alert/infosChanged/"+sessionid+"/"+familyid, {}, {});
+        }
+    </script>
+</head>
+<body onload="disconnect()">
+<noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being enabled. Please enable
+    Javascript and reload this page!</h2></noscript>
+<div>
+    <div>
+        <button id="connect" onclick="connect()">Connect</button>
+        <label>Family_id to subscribe</label><input type="text" id="familyid" />
+        <button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
+    </div>
+    <div id="conversationDiv">
+        <label>My session ID</label><input type="text" id="sessionid" />
+        <button id="sendAlert" onclick="sendAlert();">Send Alert</button>
+    </div>
+</div>
+
+
+<div class="container">
+    <form class="form-horizontal" method="POST" enctype="multipart/form-data" id="fileUploadForm">
+        <div class="form-group">
+            <label class="control-label col-sm-2" for="uploadfile">Upload File:</label>
+            <div class="col-sm-5">
+                <input type="file" class="form-control" name="uploadfile" placeholder="Upload File"></input>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+                <button type="submit" class="btn btn-default" id="btnSubmit">Upload</button>
+                <button type="submit" class="btn btn-default" id="btnGetFiles">Get Files</button>
+            </div>
+        </div>
+    </form>
+    <hr/>
+    <div class="col-sm-offset-2" id="result">
+    </div>
+</div>
+</body>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="postrequest.js"></script>
+<script src="getrequest.js"></script>
+
+</html>
