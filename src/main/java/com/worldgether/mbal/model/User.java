@@ -38,5 +38,6 @@ public class User {
     @OneToMany(fetch = FetchType.EAGER, cascade=CascadeType.ALL)
     private List<Role> roles;
 
+    private String profile_picture_path;
 
 }

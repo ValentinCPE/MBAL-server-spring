@@ -9,6 +9,8 @@ import com.worldgether.mbal.repository.SessionsRepository;
 import com.worldgether.mbal.service.FamilyService;
 import com.worldgether.mbal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -17,7 +19,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
@@ -86,10 +87,9 @@ public class UserController {
                                            @RequestParam("password") String password,
                                            @RequestParam("num_tel") String numero_telephone,
                                            @RequestParam("role") String role,
-                                           @RequestParam("file") MultipartFile file,
-                                           RedirectAttributes redirectAttributes) {
+                                           @RequestParam("uploadfile") MultipartFile file) {
 
-        String response = userService.createUser(name,prenom,mail,password,numero_telephone,role);
+        String response = userService.createUser(name,prenom,mail,password,numero_telephone,role,file);
 
         if(response == null){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -182,9 +182,37 @@ public class UserController {
         }
 
         return new ResponseEntity<UserDto>(new UserDto(user.getNom(),user.getPrenom(),user.getMail(),
-                user.getCreation_date(), user.getNumero_telephone(), user.getToken_telephone(),
+                user.getCreation_date(), user.getNumero_telephone(), user.getToken_telephone(), user.getProfile_picture_path(),
                 new FamilyDto(user.getFamily().getName(),user.getFamily().getCreation_date())),HttpStatus.OK);
 
+    }
+
+    @GetMapping("/getProfilePicture/{session_id}")
+    public ResponseEntity<Resource> getProfilePictureForUser(@PathVariable("session_id") String session_id) {
+
+        Resource file = userService.getProfilePicture(session_id);
+
+        if(file == null){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
+                .body(file);
+    }
+
+    @GetMapping("/files/{filename:.+}")
+    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+
+        Resource file = userService.getFile(filename);
+
+        if(file == null){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
+                .body(file);
     }
 
     @RequestMapping(value = "/getUsersByFamilyName/{family_name}", method = RequestMethod.GET, produces = { "application/json" })

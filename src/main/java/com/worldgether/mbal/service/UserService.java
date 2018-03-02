@@ -1,9 +1,10 @@
 package com.worldgether.mbal.service;
 
 
-import com.worldgether.mbal.model.Role;
 import com.worldgether.mbal.model.User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.Resource;
 
 import java.util.List;
 
@@ -14,7 +15,7 @@ public interface UserService {
 
     String logout(String session_id);
 
-    String createUser(String nom, String prenom, String mail, String password, String numero_telephone, String role);
+    String createUser(String nom, String prenom, String mail, String password, String numero_telephone, String role, MultipartFile file);
 
     String setTokenPhoneForUser(String session_id, String token);
 
@@ -25,6 +26,10 @@ public interface UserService {
     String checkIfPasswordCorrect(String username, String password);
 
     User getUser(String username);
+
+    Resource getProfilePicture(String session_id);
+
+    Resource getFile(String filename);
 
     Iterable<User> getAllUsers();
 

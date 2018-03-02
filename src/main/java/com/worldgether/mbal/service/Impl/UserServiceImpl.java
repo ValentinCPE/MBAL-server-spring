@@ -5,19 +5,21 @@ import com.worldgether.mbal.model.*;
 import com.worldgether.mbal.repository.*;
 import com.worldgether.mbal.service.PasswordService;
 import com.worldgether.mbal.service.UserService;
+import com.worldgether.mbal.service.storage.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -41,6 +43,11 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private SessionsRepository sessionsRepository;
+
+    @Autowired
+    private StorageService storageService;
+
+    List<String> files = new ArrayList<String>();
 
 
     @Override
@@ -110,7 +117,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String createUser(String nom, String prenom, String mail, String password, String numero_telephone, String role) {
+    public String createUser(String nom, String prenom, String mail, String password, String numero_telephone, String role, MultipartFile file) {
 
         if(nom == null || prenom == null || mail == null || password == null || numero_telephone == null || role == null){
             log.error(LoggerMessage.getLog(LoggerMessage.PARAMETER_NULL.toString(),"CREATE"));
@@ -133,6 +140,17 @@ public class UserServiceImpl implements UserService {
         newUser.setCreation_date(new Timestamp(new Date().getTime()));
         newUser.setNumero_telephone(numero_telephone);
         newUser.setRoles(Arrays.asList(new Role(role)));
+
+        try {
+            if(file != null) {
+                storageService.store(file);
+                files.add(file.getOriginalFilename());
+                newUser.setProfile_picture_path(file.getOriginalFilename());
+                log.info(LoggerMessage.getLog(LoggerMessage.IMAGE_SUCCESSFULLY_UPDATED.toString(),"CREATE",file.getOriginalFilename(),newUser.getMail()));
+            }
+        } catch (Exception e) {
+            log.error(LoggerMessage.getLog(LoggerMessage.IMAGE_SIZE_PROBLEM.toString(),"CREATE",newUser.getMail(),"2000KB"));
+        }
 
         userRepository.save(newUser);
 
@@ -297,6 +315,58 @@ public class UserServiceImpl implements UserService {
         }
 
         return user;
+
+    }
+
+    @Override
+    public Resource getProfilePicture(String session_id) {
+
+        if(session_id == null){
+            log.error(LoggerMessage.getLog(LoggerMessage.PARAMETER_NULL.toString(),"GETPROFILEPICTURE"));
+            return null;
+        }
+
+        Sessions session = sessionsRepository.findById(session_id);
+
+        if(session == null){
+            log.error(LoggerMessage.getLog(LoggerMessage.SESSION_NOT_EXIST.toString(),"GETPROFILEPICTURE",session_id));
+            return null;
+        }
+
+        User user = session.getUser();
+
+        if(user == null){
+            log.error(LoggerMessage.getLog(LoggerMessage.NO_USER_FOR_SESSION.toString(),"GETPROFILEPICTURE",session_id));
+            return null;
+        }
+
+        String pathFile = user.getProfile_picture_path();
+
+        if(pathFile == null || pathFile.isEmpty()){
+            log.error(LoggerMessage.getLog(LoggerMessage.NO_PATHFILE_FOR_USER.toString(),"GETPROFILEPICTURE",user.getMail()));
+            return null;
+        }
+
+        return storageService.loadFile(pathFile);
+
+    }
+
+    @Override
+    public Resource getFile(String filename) {
+
+        if(filename == null || filename.isEmpty()){
+            log.error(LoggerMessage.getLog(LoggerMessage.PARAMETER_NULL.toString(),"GETFILE"));
+            return null;
+        }
+
+        Resource file = storageService.loadFile(filename);
+
+        if(file == null){
+            log.error(LoggerMessage.getLog(LoggerMessage.NO_IMAGE_FOR_FILENAME.toString(),"GETFILE",filename));
+            return null;
+        }
+
+        return file;
 
     }
 

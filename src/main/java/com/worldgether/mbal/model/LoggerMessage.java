@@ -26,7 +26,11 @@ public enum LoggerMessage {
      FAMILY_NOT_EXIST("[%s] Family %s n'existe pas en BDD"),
      FAMILY_DELETED("[%s] Family %s a été supprimée"),
      USERS_NOT_EXIST_IN_FAMILY ("[%s] La liste Users est nulle dans la Family %s"),
-     FAMILY_FOR_USER_DEFINED ("[%s] User %s a désormais comme Family %s");
+     FAMILY_FOR_USER_DEFINED ("[%s] User %s a désormais comme Family %s"),
+     IMAGE_SUCCESSFULLY_UPDATED ("[%s] L'image %s a bien été téléchargée pour le User %s"),
+     IMAGE_SIZE_PROBLEM ("[%s] User %s a surement essayé de charger une image supèrieure à %s"),
+     NO_PATHFILE_FOR_USER ("[%s] User %s n'a pas d'image de profil"),
+     NO_IMAGE_FOR_FILENAME ("[%s] Aucune image pour le nom de fichier %s");
 
 
     private String message = "";
