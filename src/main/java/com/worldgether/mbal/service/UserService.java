@@ -15,7 +15,9 @@ public interface UserService {
 
     String logout(String session_id);
 
-    String createUser(String nom, String prenom, String mail, String password, String numero_telephone, String role, MultipartFile file);
+    String createUser(String nom, String prenom, String mail, String password, String numero_telephone, String role);
+
+    String activateUser(String id_activation);
 
     String getSessionIdByUsername(String username);
 

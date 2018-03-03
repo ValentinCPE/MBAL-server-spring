@@ -15,4 +15,6 @@ public interface UserRepository extends CrudRepository<User, Long> {
 
     User findByMail(String username);
 
+    User findByIsActivated(String id);
+
 }

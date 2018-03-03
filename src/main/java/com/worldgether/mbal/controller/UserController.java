@@ -86,16 +86,28 @@ public class UserController {
                                            @RequestParam("mail") String mail,
                                            @RequestParam("password") String password,
                                            @RequestParam("num_tel") String numero_telephone,
-                                           @RequestParam("role") String role,
-                                           @RequestParam("uploadfile") MultipartFile file) {
+                                           @RequestParam("role") String role) {
 
-        String response = userService.createUser(name,prenom,mail,password,numero_telephone,role,file);
+        String response = userService.createUser(name,prenom,mail,password,numero_telephone,role);
 
         if(response == null){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
         return new ResponseEntity<String>(response,HttpStatus.OK);
+
+    }
+
+    @RequestMapping(value = "/activate/{id}", method = RequestMethod.GET)
+    public ResponseEntity<String> activateUser(@PathVariable("id") String id){
+
+        String response = userService.activateUser(id);
+
+        if(response == null){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(response,HttpStatus.OK);
 
     }
 
@@ -196,7 +208,7 @@ public class UserController {
 
         return new ResponseEntity<UserDto>(new UserDto(user.getNom(),user.getPrenom(),user.getMail(),
                 user.getCreation_date(), user.getNumero_telephone(), user.getToken_telephone(), user.getProfile_picture_path(),
-                new FamilyDto(user.getFamily().getName(),user.getFamily().getCreation_date())),HttpStatus.OK);
+                user.getIsActivated(), new FamilyDto(user.getFamily().getName(),user.getFamily().getCreation_date())),HttpStatus.OK);
 
     }
 

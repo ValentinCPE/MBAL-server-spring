@@ -3,8 +3,10 @@ package com.worldgether.mbal.service.Impl;
 
 import com.worldgether.mbal.model.*;
 import com.worldgether.mbal.repository.*;
+import com.worldgether.mbal.service.EmailService;
 import com.worldgether.mbal.service.UserService;
 import com.worldgether.mbal.service.storage.StorageService;
+import freemarker.template.TemplateException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.Timestamp;
@@ -44,6 +47,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private StorageService storageService;
 
+    @Autowired
+    private EmailService emailService;
+
     List<String> files = new ArrayList<String>();
 
 
@@ -70,8 +76,8 @@ public class UserServiceImpl implements UserService {
         Sessions sessionExistante = sessionsRepository.findByUser(user);
 
         if(sessionExistante != null){
-            log.error(LoggerMessage.getLog(LoggerMessage.SESSION_ALREADY_EXIST.toString(),"LOGIN",username));
-            return Response.SESSION_ALREADY_EXISTS.toString();
+            log.info(LoggerMessage.getLog(LoggerMessage.SESSION_ALREADY_EXIST.toString(),"LOGIN",username));
+            return sessionExistante.getId();
         }
 
         Sessions newSession = new Sessions();
@@ -114,7 +120,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String createUser(String nom, String prenom, String mail, String password, String numero_telephone, String role, MultipartFile file) {
+    public String createUser(String nom, String prenom, String mail, String password, String numero_telephone, String role) {
 
         if(nom == null || prenom == null || mail == null || password == null || numero_telephone == null || role == null){
             log.error(LoggerMessage.getLog(LoggerMessage.PARAMETER_NULL.toString(),"CREATE"));
@@ -137,21 +143,48 @@ public class UserServiceImpl implements UserService {
         newUser.setCreation_date(new Timestamp(new Date().getTime()));
         newUser.setNumero_telephone(numero_telephone);
         newUser.setRoles(Arrays.asList(new Role(role)));
+        newUser.setIsActivated(UUID.randomUUID().toString());
 
-        try {
-            if(file != null) {
-                storageService.store(file);
-                files.add(file.getOriginalFilename());
-                newUser.setProfile_picture_path(file.getOriginalFilename());
-                log.info(LoggerMessage.getLog(LoggerMessage.IMAGE_SUCCESSFULLY_UPDATED.toString(),"CREATE",file.getOriginalFilename(),newUser.getMail()));
-            }
-        } catch (Exception e) {
-            log.error(LoggerMessage.getLog(LoggerMessage.IMAGE_SIZE_PROBLEM.toString(),"CREATE",newUser.getMail(),"2000KB"));
-        }
+        Map<String, String> model = new HashMap<String, String>();
+        model.put("name", newUser.getPrenom());
+        model.put("id", newUser.getIsActivated());
+        model.put("location", "France");
+        model.put("signature", "http://mbal.serveurpi.ddns.net/");
+
+        emailService.sendMail(newUser.getMail(),"Activation de votre compte MBAL",model,"email-template-createdAccount.ftl");
 
         userRepository.save(newUser);
 
         log.info(LoggerMessage.getLog(LoggerMessage.USER_CREATED.toString(),"CREATE",mail,newUser.getId().toString()));
+
+        return Response.OK.toString();
+
+    }
+
+    @Override
+    public String activateUser(String id_activation) {
+
+        if(id_activation == null || id_activation.isEmpty()){
+            log.error(LoggerMessage.getLog(LoggerMessage.PARAMETER_NULL.toString(),"ACTIVATEUSER"));
+            return null;
+        }
+
+        User user = userRepository.findByIsActivated(id_activation);
+
+        if(user == null){
+            log.error(LoggerMessage.getLog(LoggerMessage.NO_USER_TO_ACTIVATE.toString(),"ACTIVATEUSER"));
+            return Response.NO_SESSION_FOR_USER.toString();
+        }
+
+        user.setIsActivated("Activated");
+
+        Map<String,String> model = new HashMap<>();
+        model.put("location", "France");
+        model.put("signature", "http://mbal.serveurpi.ddns.net/");
+
+        emailService.sendMail(user.getMail(),"Compte activé sur MBAL",model,"email-template-activatedAccount.ftl");
+
+        userRepository.save(user);
 
         return Response.OK.toString();
 
@@ -242,6 +275,17 @@ public class UserServiceImpl implements UserService {
         if(user == null){
             log.error(LoggerMessage.getLog(LoggerMessage.USER_NOT_EXIST.toString(),"DELETEUSER",username));
             return Response.USER_ID_DOESNT_EXIST.toString();
+        }
+
+        if(user.getRoles() != null){
+            List<Role> roles = user.getRoles();
+            roleRepository.delete(roles);
+        }
+
+        Sessions session = sessionsRepository.findByUser(user);
+
+        if(session != null){
+            sessionsRepository.delete(session);
         }
 
         userRepository.delete(user);

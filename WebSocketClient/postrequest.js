@@ -16,7 +16,7 @@ function doAjaxUploadFile() {
     $.ajax({
         type: "POST",
         enctype: 'multipart/form-data',
-        url: "http://localhost:8080/api/user/setProfilePicture?session_id="+session_id,
+        url: "http://serveurpi.ddns.net:8080/MBAL/api/user/setProfilePicture?session_id="+session_id,
         headers: {
             "Authorization":"Bearer "+token,
         },
@@ -36,7 +36,7 @@ function doAjaxUploadFile() {
 function doAjaxToken(password) {
     $.ajax({
         type: "POST",
-        url: "http://localhost:8080/oauth/token?grant_type=password&username=admin&password="+password,
+        url: "http://serveurpi.ddns.net:8080/MBAL/oauth/token?grant_type=password&username=admin&password="+password,
         headers: {
           "Authorization":"Basic bXktdHJ1c3RlZC1jbGllbnQ6c2VjcmV0",
         },
@@ -44,6 +44,44 @@ function doAjaxToken(password) {
             token = data.access_token;
             setTokenFetched(true);
             $("#result").text(token);
+        },
+        error: function (e) {
+            $("#result").text(e.responseText);
+        }
+    });
+}
+
+function doAjaxCreate(mail,password) {
+    $.ajax({
+        type: "POST",
+        url: "http://serveurpi.ddns.net:8080/MBAL/api/user/create?name=test&prenom=test&mail="+mail+"&password="+password+"&num_tel=&role=USER",
+        headers: {
+            "Authorization":"Bearer "+token,
+        },
+        success: function (data) {
+            if(data == "OK"){
+                $("#result").text(data);
+            }
+        },
+        error: function (e) {
+            $("#result").text(e.responseText);
+        }
+    });
+}
+
+function doAjaxDelete(mail) {
+    $.ajax({
+        type: "POST",
+        url: "http://serveurpi.ddns.net:8080/MBAL/api/user/deleteUser?username="+mail,
+        headers: {
+            "Authorization":"Bearer "+token,
+        },
+        success: function (data) {
+            if(data == "OK"){
+                $("#result").text("Deleted");
+            }else{
+                $("#result").text("Not deleted");
+            }
         },
         error: function (e) {
             $("#result").text(e.responseText);

@@ -25,6 +25,8 @@
             document.getElementById('token').disabled = tokenFetched;
             document.getElementById('getUsers').disabled = !tokenFetched;
             document.getElementById('session_id_btn').disabled = !tokenFetched;
+            document.getElementById('create').disabled = !tokenFetched;
+            document.getElementById('delete').disabled = !tokenFetched;
             document.getElementById('file').disabled = !tokenFetched;
             document.getElementById('btnSubmit').disabled = !tokenFetched;
             document.getElementById('btnGetFiles').disabled = !tokenFetched;
@@ -72,9 +74,34 @@
             ajaxGetSessionId(username);
 
         }
+
+        function startProcess() {
+            disconnect();
+
+            var toActivate = window.location.search;
+            if(toActivate!=null && toActivate.includes("activate")){
+                var parts = toActivate.split("activate=");
+                ajaxGetActivate(parts[1]);
+            }else{
+                console.log("Nothing to activate");
+            }
+        }
+
+        function createUser() {
+            var mail = document.getElementById('mail').value;
+            var password = document.getElementById('passwordUser').value;
+
+            doAjaxCreate(mail,password);
+        }
+
+        function deleteUser() {
+            var userToDelete = document.getElementById('userToDelete').value;
+
+            doAjaxDelete(userToDelete);
+        }
     </script>
 </head>
-<body onload="disconnect()">
+<body onload="startProcess()">
 <noscript><h2 style="color: #ff0000">Seems your browser doesn't support Javascript! Websocket relies on Javascript being enabled. Please enable
     Javascript and reload this page!</h2></noscript>
 
@@ -86,13 +113,34 @@
 <div>
     <h2>WebSocket</h2>
     <div>
-        <label>Family_id to subscribe</label><input type="text" id="familyid" />
+        <label>Family_id to subscribe : </label><input type="text" id="familyid" />
         <button id="connect" onclick="connect()">Connect</button>
         <button id="disconnect" disabled="disabled" onclick="disconnect();">Disconnect</button>
     </div>
     <div id="conversationDiv">
-        <label>My session ID</label><input type="text" id="sessionid" />
+        <label>My session ID : </label><input type="text" id="sessionid" />
         <button id="sendAlert" disabled="disabled" onclick="sendAlert();">Send Alert</button>
+    </div>
+</div>
+
+<br/><br/>
+
+<div>
+    <h2>Create User</h2>
+    <div>
+        <label>Mail address : </label><input type="text" id="mail" /><br/>
+        <label>Password : </label><input type="password" id="passwordUser" />
+        <button id="create" disabled="disabled" onclick="createUser()">Create</button>
+    </div>
+</div>
+
+<br/><br/>
+
+<div>
+    <h2>Delete User</h2>
+    <div>
+        <label>Mail address : </label><input type="text" id="userToDelete" />
+        <button id="delete" disabled="disabled" onclick="deleteUser()">Delete</button>
     </div>
 </div>
 
@@ -107,7 +155,7 @@
 <br/><br/>
 
 <h2>Get Session Id For Username</h2><br/>
-<label class="control-label col-sm-2">Username:</label>
+<label class="control-label col-sm-2">Username : </label>
 <input type="text" id="username" />
 <button class="btn btn-default" disabled="disabled" id="session_id_btn" onclick="getSessionIdByUsername()">Get Session Id</button>
 

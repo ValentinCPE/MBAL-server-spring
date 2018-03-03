@@ -12,13 +12,13 @@ $( document ).ready(function() {
         if (session_id != null) {
             $.ajax({
                 type: "GET",
-                url: "http://localhost:8080/api/user/getPathProfilePicture/" + session_id,
+                url: "http://serveurpi.ddns.net:8080/MBAL/api/user/getPathProfilePicture/" + session_id,
                 headers: {
                     "Authorization": "Bearer " + token,
                 },
                 success: function (data) {
                     document.getElementById('something').innerHTML = "";
-                    var img = $("<img />").attr('src', 'http://localhost:8080/api/user/files/' + data)
+                    var img = $("<img />").attr('src', 'http://serveurpi.ddns.net:8080/MBAL/api/user/files/' + data)
                         .on('load', function () {
                             if (!this.complete || typeof this.naturalWidth == "undefined" || this.naturalWidth == 0) {
                                 alert('broken image!');
@@ -39,7 +39,7 @@ $( document ).ready(function() {
 function ajaxGetUsers(familyname){
     $.ajax({
         type : "GET",
-        url: "http://localhost:8080/api/user/getUsersByFamilyName/"+familyname,
+        url: "http://serveurpi.ddns.net:8080/MBAL/api/user/getUsersByFamilyName/"+familyname,
         headers: {
             "Authorization":"Bearer "+token,
         },
@@ -56,7 +56,7 @@ function ajaxGetUsers(familyname){
 function ajaxGetSessionId(username){
     $.ajax({
         type : "GET",
-        url: "http://localhost:8080/api/user/getSessionIdByUsername/"+username+"/",
+        url: "http://serveurpi.ddns.net:8080/MBAL/api/user/getSessionIdByUsername/"+username+"/",
         headers: {
             "Authorization":"Bearer "+token,
         },
@@ -64,6 +64,21 @@ function ajaxGetSessionId(username){
             session_id = data;
             $("#result").html("");
             $("#result").text(data);
+        },
+        error : function(e) {
+            $("#result").html(e.responseText);
+        }
+    });
+}
+
+function ajaxGetActivate(id) {
+    $.ajax({
+        type : "GET",
+        url: "http://serveurpi.ddns.net:8080/MBAL/api/user/activate/"+id,
+        success: function(data){
+            if(data == "OK"){
+                window.reload("http://serveurpi.ddns.net/WebSocketClient");
+            }
         },
         error : function(e) {
             $("#result").html(e.responseText);

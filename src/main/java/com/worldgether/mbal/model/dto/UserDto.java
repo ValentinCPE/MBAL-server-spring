@@ -24,10 +24,12 @@ public class UserDto {
 
     private String path_profile_picture;
 
+    private String isActivated;
+
     private FamilyDto family;
 
     public UserDto(String nom, String prenom, String mail, Timestamp creation_date, String numero_telephone,
-                   String token_telephone, String path_profile_picture, FamilyDto family){
+                   String token_telephone, String path_profile_picture, String isActivated, FamilyDto family){
         this.nom = nom;
         this.prenom = prenom;
         this.mail = mail;
@@ -35,6 +37,7 @@ public class UserDto {
         this.numero_telephone = numero_telephone;
         this.token_telephone = token_telephone;
         this.path_profile_picture = path_profile_picture;
+        this.isActivated = isActivated;
         this.family = family;
     }
 
@@ -45,7 +48,7 @@ public class UserDto {
         for(User user : users){
             usersDto.add(new UserDto(user.getNom(),user.getPrenom(),user.getMail(),
                     user.getCreation_date(), user.getNumero_telephone(), user.getToken_telephone(), user.getProfile_picture_path(),
-                    new FamilyDto(user.getFamily().getName(),user.getFamily().getCreation_date())));
+                    user.getIsActivated(), new FamilyDto(user.getFamily().getName(),user.getFamily().getCreation_date())));
         }
         return usersDto;
     }

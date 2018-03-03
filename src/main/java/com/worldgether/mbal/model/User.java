@@ -31,6 +31,8 @@ public class User {
 
     private String token_telephone;
 
+    private String isActivated;
+
     @ManyToOne
     @JoinColumn(name = "family_id")
     private Family family;

@@ -34,7 +34,8 @@ public enum LoggerMessage {
      PROFILE_PICTURE_NOT_UPDATED ("[%s] La nouvelle photo de profil du User %s n'a pas été ajoutée après que l'ancienne ait été supprimée"),
      NO_SESSION_FOR_USER ("[%s] Il n'y a pas de session pour le User %s"),
      GOT_PROFILE_PICTURE ("[%s] Le User %s a récupéré sa photo de profil %s"),
-     GET_FILE ("[%s] Fichier %s téléchargé");
+     GET_FILE ("[%s] Fichier %s téléchargé"),
+     NO_USER_TO_ACTIVATE ("[%s] Aucun User avec ce code d'activation");
 
     private String message = "";
 

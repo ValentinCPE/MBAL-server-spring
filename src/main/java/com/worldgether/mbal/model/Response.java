@@ -15,7 +15,8 @@ public enum Response {
     SESSION_DOESNT_EXIST ("This session doesn't exist !"),
     SESSION_ALREADY_EXISTS ("A session already exists for this user !"),
     IMAGE_NOT_UPDATED ("L'image n'a pas été modifiée"),
-    NO_SESSION_FOR_USER ("Vous n'avez pas de session en cours");
+    NO_SESSION_FOR_USER ("Vous n'avez pas de session en cours"),
+    NO_USER_TO_ACTIVATE ("Aucun User avec ce code d'activation");
 
 
     private String message = "";
