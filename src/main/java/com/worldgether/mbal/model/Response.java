@@ -13,7 +13,9 @@ public enum Response {
     FAMILY_ALREADY_EXISTS ("This family already exists !"),
     NOT_LOGGED_IN ("Not logged in !"),
     SESSION_DOESNT_EXIST ("This session doesn't exist !"),
-    SESSION_ALREADY_EXISTS ("A session already exists for this user !");
+    SESSION_ALREADY_EXISTS ("A session already exists for this user !"),
+    IMAGE_NOT_UPDATED ("L'image n'a pas été modifiée"),
+    NO_SESSION_FOR_USER ("Vous n'avez pas de session en cours");
 
 
     private String message = "";

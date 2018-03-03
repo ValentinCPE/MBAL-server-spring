@@ -17,27 +17,21 @@ import java.nio.file.Paths;
 @Service
 public class StorageService {
 
-    Logger log = LoggerFactory.getLogger(this.getClass().getName());
-    private final Path rootLocation = Paths.get("upload-dir");
+    private final Path rootLocation = Paths.get(/*"/home/pi/*/"resources/images");
 
-    public void store(MultipartFile file){
-        try {
-            Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
-        } catch (Exception e) {
-            throw new RuntimeException("FAIL!");
-        }
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+
+    public void store(MultipartFile file) throws IOException {
+        Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
     }
 
-    public Resource loadFile(String filename) {
-        try {
-            Path file = rootLocation.resolve(filename);
-            Resource resource = new UrlResource(file.toUri());
-            if(resource.exists() || resource.isReadable()) {
-                return resource;
-            }else{
-                throw new RuntimeException("FAIL!");
-            }
-        } catch (MalformedURLException e) {
+    public Resource loadFile(String filename) throws MalformedURLException {
+        Path file = rootLocation.resolve(filename);
+        Resource resource = new UrlResource(file.toUri());
+        if(resource.exists() || resource.isReadable()) {
+            return resource;
+        }else{
             throw new RuntimeException("FAIL!");
         }
     }
@@ -46,11 +40,17 @@ public class StorageService {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
 
+    public void deleteSpecificFile(String filename) throws IOException {
+        Files.delete(this.rootLocation.resolve(filename));
+    }
+
     public void init() {
         try {
-            Files.createDirectory(rootLocation);
+            Files.createDirectories(rootLocation);
         } catch (IOException e) {
-            throw new RuntimeException("Could not initialize storage!");
+            e.printStackTrace();
+            log.error(e.getMessage());
+            throw new RuntimeException(e.getMessage());
         }
     }
 }

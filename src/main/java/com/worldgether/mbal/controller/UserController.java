@@ -99,9 +99,22 @@ public class UserController {
 
     }
 
+    @RequestMapping(value = "/getSessionIdByUsername/{username}/", method = RequestMethod.GET)
+    public ResponseEntity<String> getSessionIdByUsername(@PathVariable("username") String username){
+
+        String session_id = userService.getSessionIdByUsername(username);
+
+        if(session_id == null){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(session_id,HttpStatus.OK);
+
+    }
+
     @RequestMapping(value = "/setTokenForUser", method = RequestMethod.POST)
     public ResponseEntity<String> setTokenForUser(@RequestParam("session_id") String session_id,
-                                                @RequestParam("token_phone") String token_phone){
+                                                  @RequestParam("token_phone") String token_phone){
 
         String response = userService.setTokenPhoneForUser(session_id,token_phone);
 
@@ -187,21 +200,34 @@ public class UserController {
 
     }
 
-    @GetMapping("/getProfilePicture/{session_id}")
-    public ResponseEntity<Resource> getProfilePictureForUser(@PathVariable("session_id") String session_id) {
+    @GetMapping("/getPathProfilePicture/{session_id}")
+    public ResponseEntity<String> getProfilePictureForUser(@PathVariable("session_id") String session_id) {
 
-        Resource file = userService.getProfilePicture(session_id);
+        String path = userService.getProfilePicture(session_id);
 
-        if(file == null){
+        if(path == null){
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
-                .body(file);
+        return new ResponseEntity<>(path,HttpStatus.OK);
+    }
+
+    @PostMapping("/setProfilePicture")
+    public ResponseEntity<String> setProfilePictureForUser(@RequestParam("session_id") String session_id,
+                                                           @RequestParam("uploadfile") MultipartFile file) {
+
+        String response = userService.setProfilePicture(session_id,file);
+
+        if(response == null){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(response,HttpStatus.OK);
+
     }
 
     @GetMapping("/files/{filename:.+}")
+    @ResponseBody
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
 
         Resource file = userService.getFile(filename);

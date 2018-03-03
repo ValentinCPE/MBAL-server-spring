@@ -3,22 +3,19 @@ package com.worldgether.mbal.service.Impl;
 
 import com.worldgether.mbal.model.*;
 import com.worldgether.mbal.repository.*;
-import com.worldgether.mbal.service.PasswordService;
 import com.worldgether.mbal.service.UserService;
 import com.worldgether.mbal.service.storage.StorageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 
 @Service
@@ -157,6 +154,32 @@ public class UserServiceImpl implements UserService {
         log.info(LoggerMessage.getLog(LoggerMessage.USER_CREATED.toString(),"CREATE",mail,newUser.getId().toString()));
 
         return Response.OK.toString();
+
+    }
+
+    @Override
+    public String getSessionIdByUsername(String username) {
+
+        if(username == null || username.isEmpty()){
+            log.error(LoggerMessage.getLog(LoggerMessage.PARAMETER_NULL.toString(),"GETSESSIONIDBYUSERNAME"));
+            return null;
+        }
+
+        User user = userRepository.findByMail(username);
+
+        if(user == null){
+            log.error(LoggerMessage.getLog(LoggerMessage.USER_NOT_EXIST.toString(),"GETSESSIONIDBYUSERNAME",username));
+            return Response.USER_ID_DOESNT_EXIST.toString();
+        }
+
+        Sessions session = sessionsRepository.findByUser(user);
+
+        if(session == null){
+            log.error(LoggerMessage.getLog(LoggerMessage.NO_SESSION_FOR_USER.toString(),"GETSESSIONIDBYUSERNAME",username));
+            return Response.NO_SESSION_FOR_USER.toString();
+        }
+
+        return session.getId();
 
     }
 
@@ -319,7 +342,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Resource getProfilePicture(String session_id) {
+    public String getProfilePicture(String session_id) {
 
         if(session_id == null){
             log.error(LoggerMessage.getLog(LoggerMessage.PARAMETER_NULL.toString(),"GETPROFILEPICTURE"));
@@ -347,7 +370,56 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        return storageService.loadFile(pathFile);
+        log.info(LoggerMessage.getLog(LoggerMessage.GOT_PROFILE_PICTURE.toString(),"GETPROFILEPICTURE",user.getMail(),pathFile));
+
+        return pathFile;
+
+    }
+
+    @Override
+    public String setProfilePicture(String session_id, MultipartFile file) {
+
+        if (session_id == null || file == null){
+            log.error(LoggerMessage.getLog(LoggerMessage.PARAMETER_NULL.toString(),"SETPROFILEPICTURE"));
+            return null;
+        }
+
+        Sessions session = sessionsRepository.findById(session_id);
+
+        if (session == null){
+            log.error(LoggerMessage.getLog(LoggerMessage.SESSION_NOT_EXIST.toString(),"SETPROFILEPICTURE",session_id));
+            return Response.SESSION_DOESNT_EXIST.toString();
+        }
+
+        User user = session.getUser();
+
+        if (user == null){
+            log.error(LoggerMessage.getLog(LoggerMessage.NO_USER_FOR_SESSION.toString(),"SETPROFILEPICTURE",session_id));
+            return Response.USER_ID_DOESNT_EXIST.toString();
+        }
+
+        String filePath = user.getProfile_picture_path();
+
+        if (filePath != null && !filePath.isEmpty()){
+            try {
+                storageService.deleteSpecificFile(filePath);
+            } catch (IOException e) {
+                log.error(e.getMessage());
+            }
+        }
+
+        try {
+            storageService.store(file);
+            user.setProfile_picture_path(file.getOriginalFilename());
+        } catch (IOException e) {
+            log.error(LoggerMessage.getLog(LoggerMessage.PROFILE_PICTURE_NOT_UPDATED.toString(),"SETPROFILEPICTURE",user.getMail()));
+            log.error(e.getMessage());
+            return Response.IMAGE_NOT_UPDATED.toString();
+        }
+
+        userRepository.save(user);
+
+        return Response.OK.toString();
 
     }
 
@@ -359,12 +431,20 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        Resource file = storageService.loadFile(filename);
+        Resource file = null;
+        try {
+            file = storageService.loadFile(filename);
+        } catch (MalformedURLException e) {
+            log.error(e.getMessage());
+            return null;
+        }
 
         if(file == null){
             log.error(LoggerMessage.getLog(LoggerMessage.NO_IMAGE_FOR_FILENAME.toString(),"GETFILE",filename));
             return null;
         }
+
+        log.info(LoggerMessage.getLog(LoggerMessage.GET_FILE.toString(),"GETFILE",filename));
 
         return file;
 

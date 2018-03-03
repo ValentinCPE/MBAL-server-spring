@@ -30,8 +30,11 @@ public enum LoggerMessage {
      IMAGE_SUCCESSFULLY_UPDATED ("[%s] L'image %s a bien été téléchargée pour le User %s"),
      IMAGE_SIZE_PROBLEM ("[%s] User %s a surement essayé de charger une image supèrieure à %s"),
      NO_PATHFILE_FOR_USER ("[%s] User %s n'a pas d'image de profil"),
-     NO_IMAGE_FOR_FILENAME ("[%s] Aucune image pour le nom de fichier %s");
-
+     NO_IMAGE_FOR_FILENAME ("[%s] Aucune image pour le nom de fichier %s"),
+     PROFILE_PICTURE_NOT_UPDATED ("[%s] La nouvelle photo de profil du User %s n'a pas été ajoutée après que l'ancienne ait été supprimée"),
+     NO_SESSION_FOR_USER ("[%s] Il n'y a pas de session pour le User %s"),
+     GOT_PROFILE_PICTURE ("[%s] Le User %s a récupéré sa photo de profil %s"),
+     GET_FILE ("[%s] Fichier %s téléchargé");
 
     private String message = "";
 

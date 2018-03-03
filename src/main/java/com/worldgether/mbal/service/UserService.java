@@ -17,6 +17,8 @@ public interface UserService {
 
     String createUser(String nom, String prenom, String mail, String password, String numero_telephone, String role, MultipartFile file);
 
+    String getSessionIdByUsername(String username);
+
     String setTokenPhoneForUser(String session_id, String token);
 
     String deleteUser(String username);
@@ -27,7 +29,9 @@ public interface UserService {
 
     User getUser(String username);
 
-    Resource getProfilePicture(String session_id);
+    String getProfilePicture(String session_id);
+
+    String setProfilePicture(String session_id, MultipartFile file);
 
     Resource getFile(String filename);
 
