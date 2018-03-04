@@ -19,6 +19,8 @@ import javax.mail.MessagingException;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -135,19 +137,27 @@ public class UserServiceImpl implements UserService {
         }
 
         User newUser = new User();
+        Timestamp timestamp = new Timestamp(new Date().getTime());
 
         newUser.setNom(nom);
         newUser.setPrenom(prenom);
         newUser.setMail(mail);
         newUser.setPassword(passwordEncoder.encode(password));
-        newUser.setCreation_date(new Timestamp(new Date().getTime()));
+        newUser.setCreation_date(timestamp);
         newUser.setNumero_telephone(numero_telephone);
         newUser.setRoles(Arrays.asList(new Role(role)));
         newUser.setIsActivated(UUID.randomUUID().toString());
 
+        LocalDateTime localDateTime = timestamp.toLocalDateTime();
+        localDateTime = localDateTime.plusDays(3);
+        DateTimeFormatter formatterDate = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatterHour = DateTimeFormatter.ofPattern("HH:mm");
+
         Map<String, String> model = new HashMap<String, String>();
         model.put("name", newUser.getPrenom());
         model.put("id", newUser.getIsActivated());
+        model.put("date", localDateTime.format(formatterDate));
+        model.put("hour", localDateTime.format(formatterHour));
         model.put("location", "France");
         model.put("signature", "http://mbal.serveurpi.ddns.net/");
 

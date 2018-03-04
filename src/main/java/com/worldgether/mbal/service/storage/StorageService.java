@@ -17,7 +17,7 @@ import java.nio.file.Paths;
 @Service
 public class StorageService {
 
-    private final Path rootLocation = Paths.get("/home/pi/resources/images");
+    private final Path rootLocation = Paths.get(/*"/home/pi/"*/"resources/images");
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 

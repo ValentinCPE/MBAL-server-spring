@@ -29,7 +29,8 @@
             <p>Bonjour ${name},</p>
             <p>Nous vous remercions de vous être inscrit sur notre plateforme <b>MBAL</b></p>
             <p>Veuillez cliquer sur <a href="http://serveurpi.ddns.net/WebSocketClient?activate=${id}">ce lien</a> pour finaliser votre inscription !</p>
-            <p>A tres vite !</p>
+            <p>Si votre compte n'est pas activé d'ici le <b>${date}</b> à <b>${hour}</b>, il sera automatiquement supprimé !</p>
+            <p>A très vite !</p>
         </td>
     </tr>
     <tr>
