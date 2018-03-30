@@ -16,7 +16,10 @@ public enum Response {
     SESSION_ALREADY_EXISTS ("A session already exists for this user !"),
     IMAGE_NOT_UPDATED ("L'image n'a pas été modifiée"),
     NO_SESSION_FOR_USER ("Vous n'avez pas de session en cours"),
-    NO_USER_TO_ACTIVATE ("Aucun User avec ce code d'activation");
+    NO_USER_TO_ACTIVATE ("Aucun User avec ce code d'activation"),
+    USER_NOT_ACTIVATED ("Vous n'avez pas activé votre compte !"),
+    CODE_NOT_CORRECT ("Le code que vous avez saisi n'est pas correct !"),
+    NO_USER_FOR_FAMILY ("Pas d'utilisateur pour cette famille !");
 
 
     private String message = "";

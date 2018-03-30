@@ -35,7 +35,10 @@ public enum LoggerMessage {
      NO_SESSION_FOR_USER ("[%s] Il n'y a pas de session pour le User %s"),
      GOT_PROFILE_PICTURE ("[%s] Le User %s a récupéré sa photo de profil %s"),
      GET_FILE ("[%s] Fichier %s téléchargé"),
-     NO_USER_TO_ACTIVATE ("[%s] Aucun User avec ce code d'activation");
+     NO_USER_TO_ACTIVATE ("[%s] Aucun User avec ce code d'activation"),
+     USER_NOT_ACTIVATED ("[%s] Le User %s ne peut pas se connecter car il n'a pas activé son compte"),
+     SMS_SENT ("[%s] Sms has been sent to %s (%s)"),
+     CODE_SMS_NOT_CORRECT ("[%s] Code of user %s is not correct");
 
     private String message = "";
 

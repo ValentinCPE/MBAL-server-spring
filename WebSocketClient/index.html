@@ -33,7 +33,7 @@
         }
         function connect() {
             var familyid = document.getElementById('familyid').value;
-            var socket = new SockJS('http://localhost:8080/webSocketInit');
+            var socket = new SockJS('http://192.168.1.17:8080/webSocketInit');
             stompClient = Stomp.over(socket);
             stompClient.connect({}, function(frame) {
                 setConnected(true);

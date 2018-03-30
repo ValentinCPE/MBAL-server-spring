@@ -35,7 +35,7 @@ public class StorageService {
             throw new RuntimeException("FAIL!");
         }
     }
-
+    //TODO : supprimé avec les init dans cette classe et dans le main
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }

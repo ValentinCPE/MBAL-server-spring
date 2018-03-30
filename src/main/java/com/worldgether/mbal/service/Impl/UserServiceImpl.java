@@ -4,6 +4,7 @@ package com.worldgether.mbal.service.Impl;
 import com.worldgether.mbal.model.*;
 import com.worldgether.mbal.repository.*;
 import com.worldgether.mbal.service.EmailService;
+import com.worldgether.mbal.service.SmsSender;
 import com.worldgether.mbal.service.UserService;
 import com.worldgether.mbal.service.storage.StorageService;
 import freemarker.template.TemplateException;
@@ -73,6 +74,11 @@ public class UserServiceImpl implements UserService {
         if(!this.checkIfPasswordCorrect(username,password).equals(Response.OK.toString())){
             log.error(LoggerMessage.getLog(LoggerMessage.PASSWORD_NOT_CORRECT.toString(),"LOGIN",username));
             return Response.PASSWORD_NOT_CORRECT.toString();
+        }
+
+        if(!user.getIsActivated().equals("Activated")){
+            log.error(LoggerMessage.getLog(LoggerMessage.USER_NOT_ACTIVATED.toString(),"LOGIN",username));
+            return Response.USER_NOT_ACTIVATED.toString();
         }
 
         Sessions sessionExistante = sessionsRepository.findByUser(user);
@@ -172,6 +178,48 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public String createUserByMobileApp(String nom, String prenom, String mail, String password, String numero_telephone, String role) {
+
+        if(nom == null || prenom == null || mail == null || password == null || numero_telephone == null || role == null){
+            log.error(LoggerMessage.getLog(LoggerMessage.PARAMETER_NULL.toString(),"CREATE"));
+            return null;
+        }
+
+        User user = userRepository.findByMail(mail);
+
+        if(user != null){
+            log.error(LoggerMessage.getLog(LoggerMessage.USER_ALREADY_EXIST.toString(),"CREATE",mail));
+            return Response.MAIL_ALREADY_EXISTS.toString();
+        }
+
+        User newUser = new User();
+        Timestamp timestamp = new Timestamp(new Date().getTime());
+
+        newUser.setNom(nom);
+        newUser.setPrenom(prenom);
+        newUser.setMail(mail);
+        newUser.setPassword(passwordEncoder.encode(password));
+        newUser.setCreation_date(timestamp);
+        newUser.setNumero_telephone(numero_telephone);
+        newUser.setRoles(Arrays.asList(new Role(role)));
+
+        Random rand = new Random();
+        String code = String.valueOf(rand.nextInt(9999) + 1000);
+        newUser.setIsActivated(code);
+
+        SmsSender.sendSms(numero_telephone,prenom,code);
+
+        log.info(LoggerMessage.getLog(LoggerMessage.SMS_SENT.toString(),"CREATE",mail,numero_telephone));
+
+        userRepository.save(newUser);
+
+        log.info(LoggerMessage.getLog(LoggerMessage.USER_CREATED.toString(),"CREATE",mail,newUser.getId().toString()));
+
+        return Response.OK.toString();
+
+    }
+
+    @Override
     public String activateUser(String id_activation) {
 
         if(id_activation == null || id_activation.isEmpty()){
@@ -193,6 +241,29 @@ public class UserServiceImpl implements UserService {
         model.put("signature", "http://mbal.serveurpi.ddns.net/");
 
         emailService.sendMail(user.getMail(),"Compte activé sur MBAL",model,"email-template-activatedAccount.ftl");
+
+        userRepository.save(user);
+
+        return Response.OK.toString();
+
+    }
+
+    @Override
+    public String activateUserByPhone(String id_activation) {
+
+        if(id_activation == null || id_activation.isEmpty()){
+            log.error(LoggerMessage.getLog(LoggerMessage.PARAMETER_NULL.toString(),"ACTIVATEUSER"));
+            return null;
+        }
+
+        User user = userRepository.findByIsActivated(id_activation);
+
+        if(user == null){
+            log.error(LoggerMessage.getLog(LoggerMessage.CODE_SMS_NOT_CORRECT.toString(),"ACTIVATEUSER",id_activation));
+            return Response.CODE_NOT_CORRECT.toString();
+        }
+
+        user.setIsActivated("Activated");
 
         userRepository.save(user);
 

@@ -46,8 +46,7 @@ public class MbalApplication extends SpringBootServletInitializer implements Com
 	}
 
 	@Override
-	public void run(String... args) throws Exception {
-		storageService.deleteAll();
+	public void run(String... args) {
 		storageService.init();
 	}
 

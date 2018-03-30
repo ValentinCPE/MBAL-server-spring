@@ -4,6 +4,7 @@ import com.worldgether.mbal.model.Response;
 import com.worldgether.mbal.model.Sessions;
 import com.worldgether.mbal.model.User;
 import com.worldgether.mbal.model.dto.FamilyDto;
+import com.worldgether.mbal.model.dto.ResponseDTO;
 import com.worldgether.mbal.model.dto.UserDto;
 import com.worldgether.mbal.repository.SessionsRepository;
 import com.worldgether.mbal.service.FamilyService;
@@ -53,9 +54,10 @@ public class UserController {
         return new ResponseEntity<>("Les informations concernant votre famille viennent d'être modifiées par " + user.getPrenom(),HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public ResponseEntity<String> connect(@RequestParam("username") String username,
-                                          @RequestParam("password") String password){
+    @RequestMapping(value = "/login", method = RequestMethod.POST, produces = { "application/json" })
+    @ResponseBody
+    public ResponseEntity<ResponseDTO> connect(@RequestParam("username") String username,
+                                               @RequestParam("password") String password){
 
         String sessionId = userService.connect(username,password);
 
@@ -63,12 +65,13 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(sessionId,HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDTO(sessionId),HttpStatus.OK);
 
     }
 
-    @RequestMapping(value = "/logout/{session_id}", method = RequestMethod.GET)
-    public ResponseEntity<String> logout(@PathVariable("session_id") String session_id){
+    @RequestMapping(value = "/logout/{session_id}", method = RequestMethod.GET, produces = { "application/json" })
+    @ResponseBody
+    public ResponseEntity<ResponseDTO> logout(@PathVariable("session_id") String session_id){
 
         String response = userService.logout(session_id);
 
@@ -76,12 +79,13 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDTO(response),HttpStatus.OK);
 
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public ResponseEntity<String> createUser(@RequestParam("name") String name,
+    @RequestMapping(value = "/create", method = RequestMethod.POST, produces = { "application/json" })
+    @ResponseBody
+    public ResponseEntity<ResponseDTO> createUser(@RequestParam("name") String name,
                                            @RequestParam("prenom") String prenom,
                                            @RequestParam("mail") String mail,
                                            @RequestParam("password") String password,
@@ -91,6 +95,24 @@ public class UserController {
         String response = userService.createUser(name,prenom,mail,password,numero_telephone,role);
 
         if(response == null){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(new ResponseDTO(response),HttpStatus.OK);
+
+    }
+
+    @RequestMapping(value = "/createByMobileApp", method = RequestMethod.POST)
+    public ResponseEntity<String> createUserByMobileApp(@RequestParam("name") String name,
+                                             @RequestParam("prenom") String prenom,
+                                             @RequestParam("mail") String mail,
+                                             @RequestParam("password") String password,
+                                             @RequestParam("num_tel") String numero_telephone,
+                                             @RequestParam("role") String role) {
+
+        String response = userService.createUserByMobileApp(name,prenom,mail,password,numero_telephone,role);
+
+        if(response == null){
             return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
@@ -98,10 +120,24 @@ public class UserController {
 
     }
 
-    @RequestMapping(value = "/activate/{id}", method = RequestMethod.GET)
-    public ResponseEntity<String> activateUser(@PathVariable("id") String id){
+    @RequestMapping(value = "/activate/{id}", method = RequestMethod.GET, produces = { "application/json" })
+    @ResponseBody
+    public ResponseEntity<ResponseDTO> activateUser(@PathVariable("id") String id){
 
         String response = userService.activateUser(id);
+
+        if(response == null){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(new ResponseDTO(response),HttpStatus.OK);
+
+    }
+
+    @RequestMapping(value = "/activateByPhone/{id}", method = RequestMethod.GET)
+    public ResponseEntity<String> activateUserByPhone(@PathVariable("id") String id){
+
+        String response = userService.activateUserByPhone(id);
 
         if(response == null){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -111,8 +147,9 @@ public class UserController {
 
     }
 
-    @RequestMapping(value = "/getSessionIdByUsername/{username}/", method = RequestMethod.GET)
-    public ResponseEntity<String> getSessionIdByUsername(@PathVariable("username") String username){
+    @RequestMapping(value = "/getSessionIdByUsername/{username}/", method = RequestMethod.GET, produces = { "application/json" })
+    @ResponseBody
+    public ResponseEntity<ResponseDTO> getSessionIdByUsername(@PathVariable("username") String username){
 
         String session_id = userService.getSessionIdByUsername(username);
 
@@ -120,7 +157,7 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(session_id,HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDTO(session_id),HttpStatus.OK);
 
     }
 
@@ -138,21 +175,23 @@ public class UserController {
 
     }
 
-    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST)
-    public ResponseEntity<String> deleteUser(@RequestParam("username") String username){
+    @RequestMapping(value = "/deleteUser", method = RequestMethod.POST, produces = { "application/json" })
+    @ResponseBody
+    public ResponseEntity<ResponseDTO> deleteUser(@RequestParam("username") String username){
 
         String response = userService.deleteUser(username);
 
         if (response == null){
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<String>(response,HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDTO(response),HttpStatus.OK);
 
     }
 
-    @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-    public ResponseEntity<String> updateUser(@RequestParam("name") String name,
+    @RequestMapping(value = "/updateUser", method = RequestMethod.POST, produces = { "application/json" })
+    @ResponseBody
+    public ResponseEntity<ResponseDTO> updateUser(@RequestParam("name") String name,
                                            @RequestParam("prenom") String prenom,
                                            @RequestParam("session_id") String session_id,
                                            @RequestParam("password") String password,
@@ -161,39 +200,41 @@ public class UserController {
         String response = userService.updateUser(name,prenom,session_id,password,num_telephone);
 
         if(response == null){
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<String>(response,HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDTO(response),HttpStatus.OK);
 
     }
 
-    @RequestMapping(value = "/checkIfPasswordCorrect", method = RequestMethod.POST)
-    public ResponseEntity<String> checkIfPasswordCorrect(@RequestParam("username") String username,
+    @RequestMapping(value = "/checkIfPasswordCorrect", method = RequestMethod.POST, produces = { "application/json" })
+    @ResponseBody
+    public ResponseEntity<ResponseDTO> checkIfPasswordCorrect(@RequestParam("username") String username,
                                                           @RequestParam("password") String password){
 
         String isPasswordCorrect = userService.checkIfPasswordCorrect(username,password);
 
         if(isPasswordCorrect == null){
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<String>(isPasswordCorrect,HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDTO(isPasswordCorrect),HttpStatus.OK);
 
     }
 
-    @RequestMapping(value = "/setFamilyForUser", method = RequestMethod.POST)
-    public ResponseEntity<String> setFamilyForUser(@RequestParam("session_id") String session_id,
+    @RequestMapping(value = "/setFamilyForUser", method = RequestMethod.POST, produces = { "application/json" })
+    @ResponseBody
+    public ResponseEntity<ResponseDTO> setFamilyForUser(@RequestParam("session_id") String session_id,
                                                    @RequestParam("name_family") String name_family,
                                                    @RequestParam("password_family") String password_family){
 
         String response = familyService.setFamilyForUser(session_id,name_family,password_family);
 
         if(response == null){
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<String>(response,HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDTO(response),HttpStatus.OK);
 
     }
 
@@ -212,8 +253,9 @@ public class UserController {
 
     }
 
-    @GetMapping("/getPathProfilePicture/{session_id}")
-    public ResponseEntity<String> getProfilePictureForUser(@PathVariable("session_id") String session_id) {
+    @RequestMapping(value = "/getPathProfilePicture/{session_id}", method = RequestMethod.GET, produces = { "application/json" })
+    @ResponseBody
+    public ResponseEntity<ResponseDTO> getProfilePictureForUser(@PathVariable("session_id") String session_id) {
 
         String path = userService.getProfilePicture(session_id);
 
@@ -221,12 +263,13 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
 
-        return new ResponseEntity<>(path,HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDTO(path),HttpStatus.OK);
     }
 
-    @PostMapping("/setProfilePicture")
-    public ResponseEntity<String> setProfilePictureForUser(@RequestParam("session_id") String session_id,
-                                                           @RequestParam("uploadfile") MultipartFile file) {
+    @RequestMapping(value = "/setProfilePicture", method = RequestMethod.POST, produces = { "application/json" })
+    @ResponseBody
+    public ResponseEntity<ResponseDTO> setProfilePictureForUser(@RequestParam("session_id") String session_id,
+                                                                @RequestParam("uploadfile") MultipartFile file) {
 
         String response = userService.setProfilePicture(session_id,file);
 
@@ -234,7 +277,7 @@ public class UserController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(new ResponseDTO(response),HttpStatus.OK);
 
     }
 

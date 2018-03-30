@@ -17,7 +17,11 @@ public interface UserService {
 
     String createUser(String nom, String prenom, String mail, String password, String numero_telephone, String role);
 
+    String createUserByMobileApp(String nom, String prenom, String mail, String password, String numero_telephone, String role);
+
     String activateUser(String id_activation);
+
+    String activateUserByPhone(String id_activation);
 
     String getSessionIdByUsername(String username);
 

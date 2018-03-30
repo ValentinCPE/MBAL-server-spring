@@ -23,4 +23,6 @@ public interface FamilyService {
 
     String setFamilyForUser(String session_id, String name_family, String password_family);
 
+    List<String> getPathProfilePictureForFamily(String name);
+
 }

@@ -14,6 +14,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -285,6 +287,37 @@ public class FamilyServiceImpl implements FamilyService {
         log.info(LoggerMessage.getLog(LoggerMessage.FAMILY_FOR_USER_DEFINED.toString(),"SETFAMILYFORUSER",user.getMail(),family.getName()));
 
         return Response.OK.toString();
+    }
+
+    @Override
+    public List<String> getPathProfilePictureForFamily(String name) {
+
+        if(name == null || name.isEmpty()){
+            log.error(LoggerMessage.getLog(LoggerMessage.PARAMETER_NULL.toString(),"GETPATHPROFILEPICTUREFAMILY"));
+            return null;
+        }
+
+        Family family = familyRepository.findByName(name);
+
+        if(family == null){
+            log.error(LoggerMessage.getLog(LoggerMessage.FAMILY_NOT_EXIST.toString(),"GETPATHPROFILEPICTUREFAMILY",name));
+            return new ArrayList<>(Arrays.asList(Response.FAMILY_ID_DOESNT_EXIST.toString()));
+        }
+
+        List<User> users = userRepository.findUserByFamily(family);
+
+        if(users == null){
+            return new ArrayList<>(Arrays.asList(Response.NO_USER_FOR_FAMILY.toString()));
+        }
+
+        List<String> result = new ArrayList<>();
+        for(User user : users){
+            result.add(user.getProfile_picture_path());
+            log.info(LoggerMessage.getLog(LoggerMessage.IMAGE_SUCCESSFULLY_UPDATED.toString(),"GETPATHPROFILEPICTUREFAMILY",user.getProfile_picture_path(),user.getMail()));
+        }
+
+        return result;
+
     }
 
 }
