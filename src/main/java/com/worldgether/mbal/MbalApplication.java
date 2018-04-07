@@ -28,7 +28,7 @@ import java.util.Properties;
 
 @EnableResourceServer
 @SpringBootApplication(scanBasePackages = {"com.worldgether.mbal"})
-public class MbalApplication extends SpringBootServletInitializer implements CommandLineRunner {
+public class MbalApplication extends SpringBootServletInitializer {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
@@ -43,11 +43,6 @@ public class MbalApplication extends SpringBootServletInitializer implements Com
 
 	public static void main(String[] args) {
 		SpringApplication.run(MbalApplication.class, args);
-	}
-
-	@Override
-	public void run(String... args) {
-		storageService.init();
 	}
 
 	/**

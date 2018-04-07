@@ -168,10 +168,10 @@ public class UserController {
         String response = userService.setTokenPhoneForUser(session_id,token_phone);
 
         if(response == null){
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<String>(response,HttpStatus.OK);
+        return new ResponseEntity<>(response,HttpStatus.OK);
 
     }
 
@@ -244,10 +244,10 @@ public class UserController {
         User user = userService.getUser(username);
 
         if(user == null){
-            return new ResponseEntity<UserDto>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<UserDto>(new UserDto(user.getNom(),user.getPrenom(),user.getMail(),
+        return new ResponseEntity<>(new UserDto(user.getNom(),user.getPrenom(),user.getMail(),
                 user.getCreation_date(), user.getNumero_telephone(), user.getToken_telephone(), user.getProfile_picture_path(),
                 user.getIsActivated(), new FamilyDto(user.getFamily().getName(),user.getFamily().getCreation_date())),HttpStatus.OK);
 

@@ -1,0 +1,128 @@
+spring:
+  profiles:
+    active: @environnement@
+
+---
+#Production
+spring:
+  profiles: production
+
+  datasource:
+    testWhileIdle: true
+    validationQuery: SELECT 1
+    url: jdbc:mysql://localhost:3306/MBAL_server?useSSL=false
+    username: valentin
+    password: Frigoule34
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: MBAL_server
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+
+  http:
+    multipart:
+      max-file-size: 2000KB
+      max-request-size: 2000KB
+
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: mbaldonotanswer@gmail.com
+    password: Valentin34
+    port: 587
+    protocol: smtp
+    test-connection: false
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+security:
+  user:
+    password: password
+
+  oauth2:
+    resource:
+      filter-order: 3
+
+api:
+  files:
+    baseDir: /home/pi/resources/images
+
+---
+
+#local
+spring:
+  profiles: local
+
+  datasource:
+    url: jdbc:h2:file:~/test
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  h2:
+    console:
+      enabled: true
+      path: /console
+
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: local
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+      naming-strategy: org.hibernate.cfg.ImprovedNamingStrategy
+
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5Dialect
+
+  http:
+    multipart:
+      max-file-size: 2000KB
+      max-request-size: 2000KB
+
+  mail:
+    default-encoding: UTF-8
+    host: smtp.gmail.com
+    username: mbaldonotanswer@gmail.com
+    password: Valentin34
+    port: 587
+    protocol: smtp
+    test-connection: false
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+security:
+  user:
+    password: password
+
+  oauth2:
+    resource:
+      filter-order: 3
+
+api:
+  files:
+    baseDir: resources/images
+
+---

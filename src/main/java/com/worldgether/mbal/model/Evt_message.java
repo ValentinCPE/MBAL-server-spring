@@ -1,19 +1,21 @@
 package com.worldgether.mbal.model;
 
+import com.mongodb.DBObject;
+import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
-import java.util.Date;
 
 @Document(collection = "evt_messages")
 @Data
+@Builder
+@ToString
 public class Evt_message {
 
     @Id
@@ -24,8 +26,9 @@ public class Evt_message {
     @Enumerated(EnumType.STRING)
     private Message message;
 
-    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
-    private Date dateUTC;
+    private Long timestamp;
+
+    private DBObject date;
 
     private User user;
 

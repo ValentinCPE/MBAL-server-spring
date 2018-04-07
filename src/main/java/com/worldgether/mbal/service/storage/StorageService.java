@@ -2,12 +2,12 @@ package com.worldgether.mbal.service.storage;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -17,10 +17,13 @@ import java.nio.file.Paths;
 @Service
 public class StorageService {
 
-    private final Path rootLocation = Paths.get(/*"/home/pi/"*/"resources/images");
+    private Path rootLocation;
 
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
+    public StorageService(@Value("${api.files.baseDir}") String path){
+        this.init(path);
+    }
 
     public void store(MultipartFile file) throws IOException {
         Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
@@ -35,7 +38,7 @@ public class StorageService {
             throw new RuntimeException("FAIL!");
         }
     }
-    //TODO : supprimé avec les init dans cette classe et dans le main
+
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
@@ -44,8 +47,9 @@ public class StorageService {
         Files.delete(this.rootLocation.resolve(filename));
     }
 
-    public void init() {
+    private void init(String path) {
         try {
+            rootLocation = Paths.get(path);
             Files.createDirectories(rootLocation);
         } catch (IOException e) {
             e.printStackTrace();
