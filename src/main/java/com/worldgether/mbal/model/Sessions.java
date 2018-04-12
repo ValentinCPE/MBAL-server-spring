@@ -20,4 +20,7 @@ public class Sessions {
 
     private Timestamp connectTime;
 
+    @Enumerated(EnumType.STRING)
+    private Client client;
+
 }

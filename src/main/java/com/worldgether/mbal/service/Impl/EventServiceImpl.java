@@ -2,22 +2,24 @@ package com.worldgether.mbal.service.Impl;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBObject;
-import com.worldgether.mbal.model.Evt_message;
-import com.worldgether.mbal.model.Message;
-import com.worldgether.mbal.model.Response;
-import com.worldgether.mbal.model.User;
+import com.worldgether.mbal.model.*;
 import com.worldgether.mbal.repository.Evt_messageRepository;
 import com.worldgether.mbal.repository.UserRepository;
 import com.worldgether.mbal.service.EventService;
 import com.worldgether.mbal.service.android.AndroidPushNotificationsService;
 import org.bson.BsonTimestamp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class EventServiceImpl implements EventService {
+
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     private Evt_messageRepository evt_messageRepository;
@@ -27,6 +29,9 @@ public class EventServiceImpl implements EventService {
 
     @Autowired
     private AndroidPushNotificationsService androidPushNotificationsService;
+
+    @Autowired
+    private SimpMessagingTemplate template;
 
     @Override
     public String addEvent(String username, Message message_sent){
@@ -40,6 +45,8 @@ public class EventServiceImpl implements EventService {
         if(user == null || user.getFamily() == null){
             return null;
         }
+
+        template.convertAndSend("/alert/event/"+user.getFamily().getName(), message_sent.toString());
 
         androidPushNotificationsService.sendNotification(user.getFamily().getName(), message_sent.toString());
 
@@ -57,6 +64,24 @@ public class EventServiceImpl implements EventService {
         evt_messageRepository.save(evt_message);
 
         return Response.OK.toString();
+
+    }
+
+    @Override
+    public List<Evt_message> getAllEventsByFamily(String family_name) {
+
+        if(family_name == null || family_name.isEmpty()){
+            return null;
+        }
+
+        List<Evt_message> events = evt_messageRepository.findByFamily_Name(family_name);
+
+        if(events == null || events.size()==0){
+            log.info(LoggerMessage.getLog(LoggerMessage.EVENTS_NOT_EXIST.toString(),"GETALLEVENTSBYFAMILY"));
+            return null;
+        }
+
+        return events;
 
     }
 

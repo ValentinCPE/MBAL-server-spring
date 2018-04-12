@@ -53,11 +53,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private EmailService emailService;
 
-    List<String> files = new ArrayList<String>();
-
 
     @Override
-    public String connect(String username, String password) {
+    public String connect(String username, String password, Client client) {
 
         if(username == null || password == null){
             log.error(LoggerMessage.getLog(LoggerMessage.PARAMETER_NULL.toString(),"LOGIN"));
@@ -81,11 +79,15 @@ public class UserServiceImpl implements UserService {
             return Response.USER_NOT_ACTIVATED.toString();
         }
 
-        Sessions sessionExistante = sessionsRepository.findByUser(user);
+        List<Sessions> sessionExistanteForUser = sessionsRepository.findByUser(user);
 
-        if(sessionExistante != null){
-            log.info(LoggerMessage.getLog(LoggerMessage.SESSION_ALREADY_EXIST.toString(),"LOGIN",username));
-            return sessionExistante.getId();
+        if(sessionExistanteForUser != null){
+            for(Sessions session : sessionExistanteForUser){
+                if(session.getClient() == client){
+                    log.info(LoggerMessage.getLog(LoggerMessage.SESSION_ALREADY_EXIST_CLIENT.toString(),"LOGIN",username,client.toString()));
+                    return session.getId();
+                }
+            }
         }
 
         Sessions newSession = new Sessions();
@@ -95,6 +97,8 @@ public class UserServiceImpl implements UserService {
         newSession.setUser(user);
 
         newSession.setConnectTime(new Timestamp(new Date().getTime()));
+
+        newSession.setClient(client);
 
         this.sessionsRepository.save(newSession);
 
@@ -272,7 +276,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public String getSessionIdByUsername(String username) {
+    public String getSessionIdByUsername(String username, Client client) {
 
         if(username == null || username.isEmpty()){
             log.error(LoggerMessage.getLog(LoggerMessage.PARAMETER_NULL.toString(),"GETSESSIONIDBYUSERNAME"));
@@ -286,14 +290,18 @@ public class UserServiceImpl implements UserService {
             return Response.USER_ID_DOESNT_EXIST.toString();
         }
 
-        Sessions session = sessionsRepository.findByUser(user);
+        List<Sessions> sessions = sessionsRepository.findByUser(user);
 
-        if(session == null){
-            log.error(LoggerMessage.getLog(LoggerMessage.NO_SESSION_FOR_USER.toString(),"GETSESSIONIDBYUSERNAME",username));
-            return Response.NO_SESSION_FOR_USER.toString();
+        if(sessions != null){
+            for(Sessions session : sessions){
+                if(session.getClient() == client){
+                    return session.getId();
+                }
+            }
         }
 
-        return session.getId();
+        log.error(LoggerMessage.getLog(LoggerMessage.NO_SESSION_FOR_USER.toString(),"GETSESSIONIDBYUSERNAME",username));
+        return Response.NO_SESSION_FOR_USER.toString();
 
     }
 
@@ -363,10 +371,10 @@ public class UserServiceImpl implements UserService {
             roleRepository.delete(roles);
         }
 
-        Sessions session = sessionsRepository.findByUser(user);
+        List<Sessions> sessions = sessionsRepository.findByUser(user);
 
-        if(session != null){
-            sessionsRepository.delete(session);
+        if(sessions != null){
+            sessionsRepository.delete(sessions);
         }
 
         userRepository.delete(user);

@@ -1,6 +1,7 @@
 package com.worldgether.mbal.service;
 
 
+import com.worldgether.mbal.model.Client;
 import com.worldgether.mbal.model.User;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -11,7 +12,7 @@ import java.util.List;
 @Service
 public interface UserService {
 
-    String connect(String username,String password);
+    String connect(String username, String password, Client client);
 
     String logout(String session_id);
 
@@ -23,7 +24,7 @@ public interface UserService {
 
     String activateUserByPhone(String id_activation);
 
-    String getSessionIdByUsername(String username);
+    String getSessionIdByUsername(String username, Client client);
 
     String setTokenPhoneForUser(String session_id, String token);
 

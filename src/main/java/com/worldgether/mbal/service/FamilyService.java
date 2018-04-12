@@ -2,6 +2,7 @@ package com.worldgether.mbal.service;
 
 import com.worldgether.mbal.model.Family;
 import com.worldgether.mbal.model.User;
+import com.worldgether.mbal.model.dto.FamilyDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,15 +14,17 @@ public interface FamilyService {
 
     String updatePasswordFamily(String session_id, String new_password);
 
-    String checkIfPasswordFamilyCorrect(String session_id, String password);
+    String checkIfPasswordFamilyCorrect(String name, String password);
 
     String deleteFamily(String name);
 
     Family getFamily(String name);
 
+    List<FamilyDto> getAllFamilies();
+
     List<User> getUsersByFamily(String name);
 
-    String setFamilyForUser(String session_id, String name_family, String password_family);
+    String setFamilyForUser(String username, String name_family, String password_family);
 
     List<String> getPathProfilePictureForFamily(String name);
 

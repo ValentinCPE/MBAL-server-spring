@@ -1,5 +1,6 @@
 package com.worldgether.mbal.controller;
 
+import com.worldgether.mbal.model.Client;
 import com.worldgether.mbal.model.Response;
 import com.worldgether.mbal.model.Sessions;
 import com.worldgether.mbal.model.User;
@@ -57,9 +58,10 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST, produces = { "application/json" })
     @ResponseBody
     public ResponseEntity<ResponseDTO> connect(@RequestParam("username") String username,
-                                               @RequestParam("password") String password){
+                                               @RequestParam("password") String password,
+                                               @RequestParam("client") Client client){
 
-        String sessionId = userService.connect(username,password);
+        String sessionId = userService.connect(username,password,client);
 
         if(sessionId == null){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -113,10 +115,10 @@ public class UserController {
         String response = userService.createUserByMobileApp(name,prenom,mail,password,numero_telephone,role);
 
         if(response == null){
-            return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<String>(response,HttpStatus.OK);
+        return new ResponseEntity<>(response,HttpStatus.OK);
 
     }
 
@@ -147,11 +149,12 @@ public class UserController {
 
     }
 
-    @RequestMapping(value = "/getSessionIdByUsername/{username}/", method = RequestMethod.GET, produces = { "application/json" })
+    @RequestMapping(value = "/getSessionIdByUsername/{username}/{client}", method = RequestMethod.GET, produces = { "application/json" })
     @ResponseBody
-    public ResponseEntity<ResponseDTO> getSessionIdByUsername(@PathVariable("username") String username){
+    public ResponseEntity<ResponseDTO> getSessionIdByUsername(@PathVariable("username") String username,
+                                                              @PathVariable("client") Client client){
 
-        String session_id = userService.getSessionIdByUsername(username);
+        String session_id = userService.getSessionIdByUsername(username,client);
 
         if(session_id == null){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -224,11 +227,11 @@ public class UserController {
 
     @RequestMapping(value = "/setFamilyForUser", method = RequestMethod.POST, produces = { "application/json" })
     @ResponseBody
-    public ResponseEntity<ResponseDTO> setFamilyForUser(@RequestParam("session_id") String session_id,
+    public ResponseEntity<ResponseDTO> setFamilyForUser(@RequestParam("username") String username,
                                                    @RequestParam("name_family") String name_family,
                                                    @RequestParam("password_family") String password_family){
 
-        String response = familyService.setFamilyForUser(session_id,name_family,password_family);
+        String response = familyService.setFamilyForUser(username,name_family,password_family);
 
         if(response == null){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

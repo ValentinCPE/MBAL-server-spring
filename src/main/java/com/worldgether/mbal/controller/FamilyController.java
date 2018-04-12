@@ -1,8 +1,8 @@
 package com.worldgether.mbal.controller;
 
 import com.worldgether.mbal.model.Family;
+import com.worldgether.mbal.model.dto.FamilyDto;
 import com.worldgether.mbal.model.dto.ResponseDTO;
-import com.worldgether.mbal.repository.FamilyRepository;
 import com.worldgether.mbal.service.FamilyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,9 +19,6 @@ public class FamilyController {
 
     @Autowired
     private FamilyService familyService;
-
-    @Autowired
-    private FamilyRepository familyRepository;
 
     @RequestMapping(value = "/createFamily", method = RequestMethod.POST, produces = { "application/json" })
     @ResponseBody
@@ -56,10 +53,10 @@ public class FamilyController {
 
     @RequestMapping(value = "/checkIfPasswordFamilyCorrect", method = RequestMethod.POST, produces = { "application/json" })
     @ResponseBody
-    public ResponseEntity<ResponseDTO> checkIfPasswordFamilyCorrect(@RequestParam("session_id") String session_id,
-                                                               @RequestParam("password") String password){
+    public ResponseEntity<ResponseDTO> checkIfPasswordFamilyCorrect(@RequestParam("family_name") String name,
+                                                                    @RequestParam("password") String password){
 
-        String response = familyService.checkIfPasswordFamilyCorrect(session_id,password);
+        String response = familyService.checkIfPasswordFamilyCorrect(name,password);
 
         if(response == null){
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -93,6 +90,19 @@ public class FamilyController {
         }
 
         return new ResponseEntity<>(family,HttpStatus.OK);
+
+    }
+
+    @RequestMapping(value = "/getAllFamilies", method = RequestMethod.GET, produces = { "application/json" })
+    public ResponseEntity<List<FamilyDto>> getAllFamilies(){
+
+        List<FamilyDto> families = familyService.getAllFamilies();
+
+        if(families == null){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(families,HttpStatus.OK);
 
     }
 

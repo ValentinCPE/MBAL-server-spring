@@ -1,6 +1,7 @@
 package com.worldgether.mbal.service.Impl;
 
 import com.worldgether.mbal.model.*;
+import com.worldgether.mbal.model.dto.FamilyDto;
 import com.worldgether.mbal.repository.FamilyRepository;
 import com.worldgether.mbal.repository.SessionsRepository;
 import com.worldgether.mbal.repository.UserRepository;
@@ -138,24 +139,17 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public String checkIfPasswordFamilyCorrect(String session_id, String password) {
+    public String checkIfPasswordFamilyCorrect(String name, String password) {
 
-        if(session_id == null || password == null){
+        if(name == null || password == null){
             log.error(LoggerMessage.getLog(LoggerMessage.PARAMETER_NULL.toString(),"IFPASSWORDFAMILYCORRECT"));
             return null;
         }
 
-        Sessions session = sessionsRepository.findById(session_id);
-
-        if(session == null){
-            log.error(LoggerMessage.getLog(LoggerMessage.SESSION_NOT_EXIST.toString(),"IFPASSWORDFAMILYCORRECT",session_id));
-            return Response.SESSION_DOESNT_EXIST.toString();
-        }
-
-        Family family = session.getUser().getFamily();
+        Family family = familyRepository.findByName(name);
         
         if(family == null){
-            log.error(LoggerMessage.getLog(LoggerMessage.NO_FAMILY_FOR_SESSION.toString(),"IFPASSWORDFAMILYCORRECT",session_id));
+            log.error(LoggerMessage.getLog(LoggerMessage.FAMILY_NOT_EXIST.toString(),"IFPASSWORDFAMILYCORRECT",name));
             return Response.FAMILY_ID_DOESNT_EXIST.toString();
         }
 
@@ -221,6 +215,20 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
+    public List<FamilyDto> getAllFamilies(){
+
+        Iterable<Family> families = familyRepository.findAll();
+        List<FamilyDto> familyList = new ArrayList<>();
+
+        families.forEach(family -> {
+            familyList.add(new FamilyDto(family.getName(), family.getCreation_date()));
+        });
+
+        return familyList;
+
+    }
+
+    @Override
     public List<User> getUsersByFamily(String name) {
 
         if(name == null){
@@ -247,9 +255,9 @@ public class FamilyServiceImpl implements FamilyService {
     }
 
     @Override
-    public String setFamilyForUser(String session_id, String name_family, String password_family) {
+    public String setFamilyForUser(String username, String name_family, String password_family) {
 
-        if(session_id == null || name_family == null || password_family == null){
+        if(username == null || name_family == null || password_family == null){
             log.error(LoggerMessage.getLog(LoggerMessage.PARAMETER_NULL.toString(),"SETFAMILYFORUSER"));
             return null;
         }
@@ -266,17 +274,10 @@ public class FamilyServiceImpl implements FamilyService {
             return Response.PASSWORD_NOT_CORRECT.toString();
         }
 
-        Sessions session = sessionsRepository.findById(session_id);
-
-        if(session == null){
-            log.error(LoggerMessage.getLog(LoggerMessage.SESSION_NOT_EXIST.toString(),"SETFAMILYFORUSER",session_id));
-            return Response.SESSION_DOESNT_EXIST.toString();
-        }
-
-        User user = userRepository.findById(session.getUser().getId());
+        User user = userRepository.findByMail(username);
 
         if(user == null){
-            log.error(LoggerMessage.getLog(LoggerMessage.NO_USER_FOR_SESSION.toString(),"SETFAMILYFORUSER",session_id));
+            log.error(LoggerMessage.getLog(LoggerMessage.USER_NOT_EXIST.toString(),"SETFAMILYFORUSER",username));
             return Response.USER_ID_DOESNT_EXIST.toString();
         }
 
