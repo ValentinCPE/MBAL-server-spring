@@ -305,10 +305,10 @@ public class UserController {
         List<User> users = familyService.getUsersByFamily(family_name);
 
         if (users == null){
-            return new ResponseEntity<List<UserDto>>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<List<UserDto>>(UserDto.getUsersDtoByList(users),HttpStatus.OK);
+        return new ResponseEntity<>(UserDto.getUsersDtoByList(users),HttpStatus.OK);
 
     }
 
