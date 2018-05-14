@@ -1,6 +1,7 @@
 package com.worldgether.mbal.service.Impl;
 
 
+import com.worldgether.mbal.exception.NotFoundException;
 import com.worldgether.mbal.model.*;
 import com.worldgether.mbal.repository.*;
 import com.worldgether.mbal.service.EmailService;
@@ -557,7 +558,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Resource getFile(String filename) {
+    public Resource getFile(String filename) throws NotFoundException {
 
         if(filename == null || filename.isEmpty()){
             log.error(LoggerMessage.getLog(LoggerMessage.PARAMETER_NULL.toString(),"GETFILE"));

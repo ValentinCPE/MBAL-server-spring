@@ -122,20 +122,6 @@ public class UserController {
 
     }
 
-    @RequestMapping(value = "/activate/{id}", method = RequestMethod.GET, produces = { "application/json" })
-    @ResponseBody
-    public ResponseEntity<ResponseDTO> activateUser(@PathVariable("id") String id){
-
-        String response = userService.activateUser(id);
-
-        if(response == null){
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-        return new ResponseEntity<>(new ResponseDTO(response),HttpStatus.OK);
-
-    }
-
     @RequestMapping(value = "/activateByPhone/{id}", method = RequestMethod.GET)
     public ResponseEntity<String> activateUserByPhone(@PathVariable("id") String id){
 
@@ -284,31 +270,16 @@ public class UserController {
 
     }
 
-    @GetMapping("/files/{filename:.+}")
-    @ResponseBody
-    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-
-        Resource file = userService.getFile(filename);
-
-        if(file == null){
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        return ResponseEntity.ok()
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
-                .body(file);
-    }
-
     @RequestMapping(value = "/getUsersByFamilyName/{family_name}", method = RequestMethod.GET, produces = { "application/json" })
     public ResponseEntity<List<UserDto>> getUsersByFamilyId(@PathVariable("family_name") String family_name){
 
         List<User> users = familyService.getUsersByFamily(family_name);
 
         if (users == null){
-            return new ResponseEntity<List<UserDto>>(HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
 
-        return new ResponseEntity<List<UserDto>>(UserDto.getUsersDtoByList(users),HttpStatus.OK);
+        return new ResponseEntity<>(UserDto.getUsersDtoByList(users),HttpStatus.OK);
 
     }
 

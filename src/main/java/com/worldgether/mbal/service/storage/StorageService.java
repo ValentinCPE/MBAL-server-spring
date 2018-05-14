@@ -1,5 +1,6 @@
 package com.worldgether.mbal.service.storage;
 
+import com.worldgether.mbal.exception.NotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,13 +30,13 @@ public class StorageService {
         Files.copy(file.getInputStream(), this.rootLocation.resolve(file.getOriginalFilename()));
     }
 
-    public Resource loadFile(String filename) throws MalformedURLException {
+    public Resource loadFile(String filename) throws MalformedURLException, NotFoundException {
         Path file = rootLocation.resolve(filename);
         Resource resource = new UrlResource(file.toUri());
         if(resource.exists() || resource.isReadable()) {
             return resource;
         }else{
-            throw new RuntimeException("FAIL!");
+            throw new NotFoundException("Image doesn't exist!");
         }
     }
 

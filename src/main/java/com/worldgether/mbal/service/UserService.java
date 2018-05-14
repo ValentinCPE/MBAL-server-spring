@@ -1,6 +1,7 @@
 package com.worldgether.mbal.service;
 
 
+import com.worldgether.mbal.exception.NotFoundException;
 import com.worldgether.mbal.model.Client;
 import com.worldgether.mbal.model.User;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,7 @@ public interface UserService {
 
     String setProfilePicture(String session_id, MultipartFile file);
 
-    Resource getFile(String filename);
+    Resource getFile(String filename) throws NotFoundException;
 
     Iterable<User> getAllUsers();
 
