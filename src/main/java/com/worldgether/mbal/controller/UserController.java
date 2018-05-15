@@ -11,8 +11,6 @@ import com.worldgether.mbal.repository.SessionsRepository;
 import com.worldgether.mbal.service.FamilyService;
 import com.worldgether.mbal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
@@ -21,7 +19,6 @@ import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
 @Controller
@@ -227,8 +224,8 @@ public class UserController {
 
     }
 
-    @RequestMapping(value = "/getUserByName/{username}/", method = RequestMethod.GET, produces = { "application/json" })
-    public ResponseEntity<UserDto> getUserByName(@PathVariable("username") String username){
+    @RequestMapping(value = "/getUserByName", method = RequestMethod.POST, produces = { "application/json" })
+    public ResponseEntity<UserDto> getUserByName(@RequestParam(value = "username", required = false) String username){
 
         User user = userService.getUser(username);
 
@@ -237,8 +234,8 @@ public class UserController {
         }
 
         return new ResponseEntity<>(new UserDto(user.getNom(),user.getPrenom(),user.getMail(),
-                user.getCreation_date(), user.getNumero_telephone(), user.getToken_telephone(), user.getProfile_picture_path(),
-                user.getIsActivated(), new FamilyDto(user.getFamily().getName(),user.getFamily().getCreation_date())),HttpStatus.OK);
+                user.getCreation_date(), user.getNumero_telephone() != null ? user.getNumero_telephone() : "", user.getToken_telephone() != null ? user.getToken_telephone() : "", user.getProfile_picture_path() != null ? user.getProfile_picture_path() : "",
+                user.getIsActivated() != null ? user.getIsActivated() : "Not Activated", user.getFamily() != null ? new FamilyDto(user.getFamily().getName(),user.getFamily().getCreation_date()) : new FamilyDto()),HttpStatus.OK);
 
     }
 

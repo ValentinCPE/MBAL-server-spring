@@ -4,27 +4,18 @@ import com.worldgether.mbal.Security.CustomUserDetails;
 import com.worldgether.mbal.model.Role;
 import com.worldgether.mbal.model.User;
 import com.worldgether.mbal.repository.UserRepository;
-import com.worldgether.mbal.service.storage.StorageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.Bean;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-
-import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.Properties;
 
 @EnableResourceServer
 @SpringBootApplication(scanBasePackages = {"com.worldgether.mbal"})
@@ -32,9 +23,6 @@ public class MbalApplication extends SpringBootServletInitializer {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
-	@Resource
-	StorageService storageService;
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
