@@ -1,9 +1,7 @@
 package com.worldgether.mbal.model;
 
 import com.mongodb.DBObject;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -16,6 +14,8 @@ import javax.persistence.GenerationType;
 @Data
 @Builder
 @ToString
+@NoArgsConstructor
+@AllArgsConstructor
 public class Evt_message {
 
     @Id

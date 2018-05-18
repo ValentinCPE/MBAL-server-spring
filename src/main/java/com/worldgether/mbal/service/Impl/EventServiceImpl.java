@@ -13,8 +13,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class EventServiceImpl implements EventService {
@@ -76,9 +75,13 @@ public class EventServiceImpl implements EventService {
 
         List<Evt_message> events = evt_messageRepository.findByFamily_Name(family_name);
 
-        if(events == null || events.size()==0){
+        if(events == null){
             log.info(LoggerMessage.getLog(LoggerMessage.EVENTS_NOT_EXIST.toString(),"GETALLEVENTSBYFAMILY"));
             return null;
+        }
+
+        if(events.size() == 0){
+            return new ArrayList<>(Collections.singletonList(new Evt_message()));
         }
 
         return events;
