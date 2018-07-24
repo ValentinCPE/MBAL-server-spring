@@ -11,6 +11,8 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 public class FamilyDto {
 
+    private int id;
+
     private String name;
 
     private Timestamp creation_date;

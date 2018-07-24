@@ -45,6 +45,8 @@ public class AndroidPushNotificationsService {
         JSONObject notification = new JSONObject();
         notification.put("title", "MBAL");
         notification.put("body", message);
+        notification.put("icon", "ic_mbal.png");
+        notification.put("sound", "cloche.mp3");
 
         JSONObject data = new JSONObject();
         data.put("Key-1", "JSA Data 1");

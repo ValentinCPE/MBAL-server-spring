@@ -37,7 +37,7 @@ public class UserController {
     @MessageMapping("/infosChanged/{session_id}/{family_id}")
     @SendTo("/alert/infosChanged/{family_id}")
     public ResponseEntity<String> alertFamilyChanged(@DestinationVariable String session_id,
-                                     @DestinationVariable String family_id) throws Exception {
+                                     @DestinationVariable String family_id) {
 
         if(session_id == null) return new ResponseEntity<>(Response.SESSION_DOESNT_EXIST.toString(),HttpStatus.INTERNAL_SERVER_ERROR);
 
@@ -235,7 +235,7 @@ public class UserController {
 
         return new ResponseEntity<>(new UserDto(user.getNom(),user.getPrenom(),user.getMail(),
                 user.getCreation_date(), user.getNumero_telephone() != null ? user.getNumero_telephone() : "", user.getToken_telephone() != null ? user.getToken_telephone() : "", user.getProfile_picture_path() != null ? user.getProfile_picture_path() : "",
-                user.getIsActivated() != null ? user.getIsActivated() : "Not Activated", user.getFamily() != null ? new FamilyDto(user.getFamily().getName(),user.getFamily().getCreation_date()) : new FamilyDto()),HttpStatus.OK);
+                user.getIsActivated() != null ? user.getIsActivated() : "Not Activated", user.getFamily() != null ? new FamilyDto(user.getFamily().getId(),user.getFamily().getName(),user.getFamily().getCreation_date()) : new FamilyDto()),HttpStatus.OK);
 
     }
 

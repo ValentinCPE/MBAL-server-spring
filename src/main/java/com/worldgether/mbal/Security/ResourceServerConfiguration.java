@@ -19,8 +19,11 @@ public class ResourceServerConfiguration extends ResourceServerConfigurerAdapter
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.headers().frameOptions().disable().and()
-                .authorizeRequests()
-                .antMatchers("/private/**","/api/**").authenticated()
+                .authorizeRequests()/*.anyRequest().authenticated().and()
+                .formLogin().loginPage("/api/user/login").permitAll().and()
+                .logout().deleteCookies("remember-me").permitAll().and()
+                .rememberMe().tokenValiditySeconds(120);
+                */.antMatchers("/private/**","/api/**").authenticated()
                 .antMatchers("/","/home","/register","/login","/public/**").permitAll();
     }
 

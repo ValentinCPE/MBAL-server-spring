@@ -40,7 +40,8 @@ public enum LoggerMessage {
      USER_NOT_ACTIVATED ("[%s] Le User %s ne peut pas se connecter car il n'a pas active son compte"),
      SMS_SENT ("[%s] Sms has been sent to %s (%s)"),
      CODE_SMS_NOT_CORRECT ("[%s] Code of user %s is not correct"),
-     EVENTS_NOT_EXIST ("[%s] Cette famille n'a pas d'evenement");
+     EVENTS_NOT_EXIST ("[%s] Cette famille n'a pas d'evenement"),
+     NO_EVENTS_FOR_DATE("[%s] Pas d'évenement pour la date %s");
 
     private String message = "";
 

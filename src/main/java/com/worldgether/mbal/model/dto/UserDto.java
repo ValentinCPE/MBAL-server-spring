@@ -48,7 +48,7 @@ public class UserDto {
         for(User user : users){
             usersDto.add(new UserDto(user.getNom(),user.getPrenom(),user.getMail(),
                     user.getCreation_date(), user.getNumero_telephone(), user.getToken_telephone(), user.getProfile_picture_path(),
-                    user.getIsActivated(), new FamilyDto(user.getFamily().getName(),user.getFamily().getCreation_date())));
+                    user.getIsActivated(), new FamilyDto(user.getFamily().getId(),user.getFamily().getName(),user.getFamily().getCreation_date())));
         }
         return usersDto;
     }

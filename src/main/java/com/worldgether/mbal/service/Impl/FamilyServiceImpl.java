@@ -221,7 +221,7 @@ public class FamilyServiceImpl implements FamilyService {
         List<FamilyDto> familyList = new ArrayList<>();
 
         families.forEach(family -> {
-            familyList.add(new FamilyDto(family.getName(), family.getCreation_date()));
+            familyList.add(new FamilyDto(family.getId(),family.getName(), family.getCreation_date()));
         });
 
         return familyList;
