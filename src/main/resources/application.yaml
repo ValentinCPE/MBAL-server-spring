@@ -2,6 +2,10 @@ spring:
   profiles:
     active: "@environnement@"
 
+logging:
+ level:
+   root: INFO
+
 ---
 #Production
 spring:

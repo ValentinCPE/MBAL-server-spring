@@ -54,6 +54,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private SmsSender smsSender;
+
 
     @Override
     public String connect(String username, String password, Client client) {
@@ -170,7 +173,7 @@ public class UserServiceImpl implements UserService {
         model.put("date", localDateTime.format(formatterDate));
         model.put("hour", localDateTime.format(formatterHour));
         model.put("location", "France");
-        model.put("signature", "http://mbal.serveurpi.ddns.net/");
+        model.put("signature", "https://www.mbal.ovh");
 
         emailService.sendMail(newUser.getMail(),"Activation de votre compte MBAL",model,"email-template-createdAccount.ftl");
 
@@ -212,7 +215,11 @@ public class UserServiceImpl implements UserService {
         String code = String.valueOf(rand.nextInt(9999) + 1000);
         newUser.setIsActivated(code);
 
-        SmsSender.sendSms(numero_telephone,prenom,code);
+        String response = smsSender.sendSms(numero_telephone,prenom,code);
+
+        if(response == null || !response.contains("\"status\": \"0\"")){
+            return response;
+        }
 
         log.info(LoggerMessage.getLog(LoggerMessage.SMS_SENT.toString(),"CREATE",mail,numero_telephone));
 

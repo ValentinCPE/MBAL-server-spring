@@ -12,6 +12,8 @@ public interface EventService {
 
     String addEvent(String username, Message message);
 
+    String changeWifiSettings(String username);
+
     List<Evt_message> getAllEventsByFamily(String family_name);
 
     Evt_message getLastEventByFamily(String family_name);

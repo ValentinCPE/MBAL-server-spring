@@ -23,6 +23,8 @@ import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
 
+//TODO : Livrer en prod
+
 @Controller
 @RequestMapping("/api/event")
 public class EventController {
@@ -44,6 +46,19 @@ public class EventController {
         }
 
         return new ResponseEntity<>(new ResponseDTO(response),HttpStatus.OK);
+
+    }
+
+    @RequestMapping(value = "/changeWifiSettings", method = RequestMethod.POST, produces = { "application/json" })
+    public ResponseEntity<ResponseDTO> changeWifiSettings(@RequestParam("name_mbal") String name_mbal){
+
+        String changeWifi = eventService.changeWifiSettings(name_mbal);
+
+        if(changeWifi == null){
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+        return new ResponseEntity<>(new ResponseDTO(changeWifi),HttpStatus.OK);
 
     }
 

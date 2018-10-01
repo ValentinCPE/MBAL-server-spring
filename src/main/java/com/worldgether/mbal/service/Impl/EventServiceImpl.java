@@ -27,6 +27,8 @@ import static com.worldgether.mbal.model.Message.NEW_COURRIEL;
 @Service
 public class EventServiceImpl implements EventService {
 
+    private static boolean performSaving = true;
+
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -55,6 +57,25 @@ public class EventServiceImpl implements EventService {
         }
 
         if(message_sent == Message.NEW_COURRIEL){
+
+            if(!performSaving){
+                log.info(LoggerMessage.getLog(LoggerMessage.NEW_COURRIEL_LOCKED.toString(),"ADDEVENT"));
+                return null;
+            }
+
+            performSaving = false; //lock during 60 seconds
+
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            performSaving = true;
+                            log.info(LoggerMessage.getLog(LoggerMessage.UNLOCK_REMAINING_TIME.toString(),"ADDEVENT"));
+                        }
+                    },
+                    60000
+            );
+
             template.convertAndSend("/alert/event/"+user.getFamily().getId(), message_sent.toString());
         }
 
@@ -75,6 +96,33 @@ public class EventServiceImpl implements EventService {
                 .build();
 
         evt_messageRepository.save(evt_message);
+
+        return Response.OK.toString();
+
+    }
+
+    @Override
+    public String changeWifiSettings(String username) {
+
+        if(username == null || username.isEmpty()){
+            return null;
+        }
+
+        User mbal = userRepository.findByMail(username);
+
+        if(mbal == null){
+            log.info(LoggerMessage.getLog(LoggerMessage.USER_NOT_EXIST.toString(),"CHANGEWIFISETTINGS",username));
+            return null;
+        }
+
+        Family familyForMbal = mbal.getFamily();
+
+        if(familyForMbal == null){
+            log.info(LoggerMessage.getLog(LoggerMessage.FAMILY_NOT_EXIST.toString(),"CHANGEWIFISETTINGS","pour "+username));
+            return null;
+        }
+
+        template.convertAndSend("/alert/configDetector/" + familyForMbal.getId(), "CONFIG_CHANGED");
 
         return Response.OK.toString();
 
@@ -109,7 +157,7 @@ public class EventServiceImpl implements EventService {
             return null;
         }
 
-        Evt_message lastEvent = evt_messageRepository.findTopByOrderByTimestampDesc();
+        Evt_message lastEvent = evt_messageRepository.findTopByFamily_NameOrderByTimestampDesc(family_name);
 
         if(lastEvent == null){
             lastEvent = new Evt_message();

@@ -41,7 +41,9 @@ public enum LoggerMessage {
      SMS_SENT ("[%s] Sms has been sent to %s (%s)"),
      CODE_SMS_NOT_CORRECT ("[%s] Code of user %s is not correct"),
      EVENTS_NOT_EXIST ("[%s] Cette famille n'a pas d'evenement"),
-     NO_EVENTS_FOR_DATE("[%s] Pas d'évenement pour la date %s");
+     NO_EVENTS_FOR_DATE("[%s] Pas d'évenement pour la date %s"),
+     NEW_COURRIEL_LOCKED("[%s] Un courriel a été reçu moins de 60 secondes avant !"),
+     UNLOCK_REMAINING_TIME("[%s] Nouveau courriel de nouveau possible !");
 
     private String message = "";
 

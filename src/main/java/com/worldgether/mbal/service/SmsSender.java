@@ -1,40 +1,62 @@
 package com.worldgether.mbal.service;
 
-import com.twilio.Twilio;
-import com.twilio.rest.api.v2010.account.Message;
-import com.twilio.type.PhoneNumber;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
+@Service
 public class SmsSender {
-    // Find your Account Sid and Auth Token at twilio.com/console
-    public static final String ACCOUNT_SID =
-            "AC958e68596ebd63d1983647bb25c0dc76";
-    public static final String AUTH_TOKEN =
-            "79b567063b51251ff20f1a95b901ab29";
 
-    public static String sendSms(String number, String prenom, String codeToCheck) {
-        Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
+    private RestTemplate restTemplate;
+    private HttpEntity<?> entity;
 
-        if(!number.isEmpty() && number.matches("[0-9+]+")){
-            if(number.length() == 10){
-                number = "+33" + number.substring(1);
-            }else if(number.length() == 12){
-                if(number.charAt(0) != '+'){
+    public SmsSender() {
+        restTemplate = new RestTemplate();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Accept", MediaType.APPLICATION_JSON_VALUE);
+
+        this.entity = new HttpEntity<>(headers);
+    }
+
+    public String sendSms(String number, String prenom, String codeToCheck) {
+
+        if (!number.isEmpty() && number.matches("[0-9+]+")) {
+            if (number.length() == 12) {
+                if (number.charAt(0) == '+') {
+                    number = number.replace("+", "");
+                } else {
                     return null;
                 }
-            }else{
-                return null;
+            } else if (number.length() == 10) {
+                number = "33" + number.substring(1);
+            } else if (number.length() == 9) {
+                number = "33" + number;
             }
-        }else{
+        } else {
             return null;
         }
 
-        Message message = Message
-                .creator(new PhoneNumber(number), // to
-                        new PhoneNumber("+33757901306"), // from
-                        "MBAL\nBienvenue "+prenom+"\rCode : "+codeToCheck)
-                .create();
+        UriComponentsBuilder builder = null;
 
-        return message.getErrorMessage();
+        builder = UriComponentsBuilder.fromHttpUrl("https://rest.nexmo.com/sms/json")
+                .queryParam("api_key", "87867708")
+                .queryParam("api_secret", "Qo3KmrHYcksKi8K9")
+                .queryParam("to", number)
+                .queryParam("from", "MBAL-Verif")
+                .queryParam("text", codeToCheck);
+
+        HttpEntity<String> response = restTemplate.exchange(
+                builder.toUriString(),
+                HttpMethod.GET,
+                this.entity,
+                String.class);
+
+        return response.getBody();
     }
 }
 
