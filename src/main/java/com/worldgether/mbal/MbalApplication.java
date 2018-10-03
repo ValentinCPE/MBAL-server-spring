@@ -1,8 +1,10 @@
 package com.worldgether.mbal;
 
 import com.worldgether.mbal.Security.CustomUserDetails;
+import com.worldgether.mbal.model.Family;
 import com.worldgether.mbal.model.Role;
 import com.worldgether.mbal.model.User;
+import com.worldgether.mbal.repository.FamilyRepository;
 import com.worldgether.mbal.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
@@ -23,6 +25,9 @@ public class MbalApplication extends SpringBootServletInitializer {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private FamilyRepository familyRepository;
 
 	@Override
 	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
@@ -45,6 +50,12 @@ public class MbalApplication extends SpringBootServletInitializer {
 
 		//Setup a default user if db is empty
 		if (repository.count()==0) {
+			Family family = new Family();
+			family.setName("Guevara");
+			family.setPassword(passwordEncoder.encode("Valentin34"));
+			family.setCreation_date(new Timestamp(new Date().getTime()));
+			familyRepository.save(family);
+
 			User user = new User();
 			user.setNom("Admin");
 			user.setPrenom("Admin");
@@ -52,9 +63,31 @@ public class MbalApplication extends SpringBootServletInitializer {
 			user.setPassword(passwordEncoder.encode("Valentin34"));
 			user.setCreation_date(new Timestamp(new Date().getTime()));
 			user.setNumero_telephone("0000000000");
+			user.setFamily(family);
 			user.setRoles(Arrays.asList(new Role("USER"), new Role("ADMIN")));
 			repository.save(user);
 		}
+
+		if(repository.findByMail("testAmazon") == null){
+			Family family = new Family();
+			family.setName("AmazonFamily");
+			family.setPassword(passwordEncoder.encode("amazon"));
+			family.setCreation_date(new Timestamp(new Date().getTime()));
+			familyRepository.save(family);
+
+			User user = User.builder()
+				.nom("Test")
+				.prenom("Amazon")
+				.mail("testAmazon")
+				.password(passwordEncoder.encode("Valentin34"))
+				.creation_date(new Timestamp(new Date().getTime()))
+				.numero_telephone("0000000000")
+				.family(family)
+				.roles(Arrays.asList(new Role("USER"), new Role("AMAZON")))
+				.build();
+			repository.save(user);
+		}
+
 		builder.userDetailsService(userDetailsService(repository)).passwordEncoder(passwordEncoder);
 	}
 

@@ -160,8 +160,15 @@ public class EventServiceImpl implements EventService {
         Evt_message lastEvent = evt_messageRepository.findTopByFamily_NameOrderByTimestampDesc(family_name);
 
         if(lastEvent == null){
+            Family fakeFamily = new Family();
+            fakeFamily.setName(family_name);
+
             lastEvent = new Evt_message();
-            log.info(LoggerMessage.getLog(LoggerMessage.EVENTS_NOT_EXIST.toString(),"GETLASTEVENTBYFAMILY"));
+            lastEvent.setFamily(fakeFamily);
+            lastEvent.setTimestamp(new Date().getTime());
+            lastEvent.setMessage(Message.NO_FAMILY);
+
+            log.error(LoggerMessage.getLog(LoggerMessage.EVENTS_NOT_EXIST.toString(),"GETLASTEVENTBYFAMILY", fakeFamily.getName()));
         }
 
         return lastEvent;

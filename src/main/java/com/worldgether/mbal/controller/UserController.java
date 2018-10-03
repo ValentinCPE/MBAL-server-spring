@@ -16,12 +16,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.security.Principal;
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("/api/user")
 public class UserController {
 
@@ -33,6 +35,11 @@ public class UserController {
 
     @Autowired
     private SessionsRepository sessionsRepository;
+
+    @GetMapping("/me")
+    public Principal resource(Principal principal) {
+        return principal;
+    }
 
     @MessageMapping("/infosChanged/{session_id}/{family_id}")
     @SendTo("/alert/infosChanged/{family_id}")
