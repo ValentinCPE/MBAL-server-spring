@@ -1,0 +1,29 @@
+<html xmlns:th="http://www.thymeleaf.org">
+    <body>
+        <div th:fragment="content">
+        <h1>OAuth Approval</h1>
+            <p><b th:text="${nameUser}"></b>, do you authorize <b th:text="${clientId}"></b> to access your protected resources?</p>
+            <form id="confirmationForm" name="confirmationForm" th:action="@{/oauth/authorize}" method="post">
+                <input name="user_oauth_approval" value="true" type="hidden"/>
+                <!--String csrfTemplate = null;
+    CsrfToken csrfToken = (CsrfToken) (model.containsKey("_csrf") ? model.get("_csrf") : request.getAttribute("_csrf"));
+    if (csrfToken != null) {
+    -->         <input th:if="${csrfTokenParameter}" type="hidden" name="[[${csrfTokenParameter}]]" value="[[${csrfTokenGetToken}]]" />
+
+                <label>
+                    <input name="authorize" value="Authorize" type="submit"/>
+                </label>
+            </form>
+
+            <form id="denialForm" name="denialForm"  th:action="@{/oauth/authorize}" method="post">
+                <input name="user_oauth_approval" value="false" type="hidden"/>
+        <!--if (csrfTemplate != null) {
+        builder.append(-->
+                <input  th:if="${csrfTokenParameter}" type="hidden" name="[[${csrfTokenParameter}]]" value="[[${csrfTokenGetToken}]]"  />
+                <label>
+                    <input name="deny" value="Deny" type="submit"/>
+                </label>
+            </form>
+        </div>
+    </body>
+</html>

@@ -27,17 +27,16 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
                 .httpBasic().disable()
-                .anonymous().disable()
                 .csrf().disable()
                 .headers().frameOptions().disable().and()
                 .requestMatchers()
-                .antMatchers("/","/home","/register","/login", "/console/**", "/public/**", "/oauth/authorize")
+                .antMatchers("/","/home","/register", "/login", "/api/user/login", "/console/**", "/public/**", "/oauth/authorize")
                 .and()
                 .authorizeRequests()
-                .anyRequest()
-                .authenticated()
+                .antMatchers("/public/**", "/console/**").anonymous()
+                .anyRequest().authenticated()
                 .and()
-                .formLogin()
+                .formLogin().loginPage("/api/user/login").failureUrl("/api/user/login?error=true")
                 .permitAll();
                 /*.anyRequest().authenticated().and()
                 .formLogin().loginPage("/api/user/login").permitAll().and()

@@ -11,8 +11,11 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.A
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.endpoint.AuthorizationEndpoint;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
 import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+
+import javax.annotation.PostConstruct;
 
 @Configuration
 @EnableAuthorizationServer
@@ -30,6 +33,13 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private AuthorizationEndpoint authorizationEndpoint;
+
+    @PostConstruct
+    public void init() {
+        authorizationEndpoint.setUserApprovalPage("forward:/oauth/confirm_access_mbal");
+    }
 
     @Bean
     public JwtAccessTokenConverter tokenEnhancer() {
