@@ -63,6 +63,7 @@ public class MbalApplication extends SpringBootServletInitializer {
 			user.setPassword(passwordEncoder.encode("Valentin34"));
 			user.setCreation_date(new Timestamp(new Date().getTime()));
 			user.setNumero_telephone("0000000000");
+			user.setProfile_picture_path("testPhoto.png");
 			user.setFamily(family);
 			user.setRoles(Arrays.asList(new Role("USER"), new Role("ADMIN")));
 			repository.save(user);

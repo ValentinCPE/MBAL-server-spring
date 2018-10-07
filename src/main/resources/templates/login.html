@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+	<title>MBAL Login</title>
+	<meta charset="UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<!--===============================================================================================-->	
+	<link rel="icon" type="image/png" th:href="@{/resources/login/images/icons/favicon.ico}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" th:href="@{/resources/login/vendor/bootstrap/css/bootstrap.min.css}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" th:href="@{/resources/login/fonts/font-awesome-4.7.0/css/font-awesome.min.css}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" th:href="@{/resources/login/fonts/iconic/css/material-design-iconic-font.min.css}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" th:href="@{/resources/login/vendor/animate/animate.css}"/>
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" th:href="@{/resources/login/vendor/css-hamburgers/hamburgers.min.css}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" th:href="@{/resources/login/vendor/animsition/css/animsition.min.css}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" th:href="@{/resources/login/vendor/select2/select2.min.css}"/>
+<!--===============================================================================================-->	
+	<link rel="stylesheet" type="text/css" th:href="@{/resources/login/vendor/daterangepicker/daterangepicker.css}"/>
+<!--===============================================================================================-->
+	<link rel="stylesheet" type="text/css" th:href="@{/resources/login/css/util.css}"/>
+	<link rel="stylesheet" type="text/css" th:href="@{/resources/login/css/main.css}"/>
+<!--===============================================================================================-->
+</head>
+<body>
+	
+	<div class="limiter" th:fragment="content">
+		<div class="container-login100" th:style="'background-image: url(' + ${pathBackgroundImage} + ');'">
+			<div class="wrap-login100">
+				<form class="login100-form validate-form" th:action="@{/api/user/login}" method="post">
+
+					<span class="login100-form-title p-b-34 p-t-27">
+						Connexion
+					</span>
+
+					<div th:if="${errorMsg}" class="alert alert-error">
+						Nom d'utilisateur et/ou mot de passe incorrect.
+					</div>
+
+					<div th:if="${msg}" class="alert alert-success">
+						Vous avez été déconnecté.
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate = "Enter username">
+						<input class="input100" type="text" id="username" name="username" placeholder="Nom d'utilisateur"/>
+						<span class="focus-input100" data-placeholder="&#xf207;"></span>
+					</div>
+
+					<div class="wrap-input100 validate-input" data-validate="Enter password">
+						<input class="input100" type="password" id="password" name="password" placeholder="Mot de passe"/>
+						<span class="focus-input100" data-placeholder="&#xf191;"></span>
+					</div>
+
+					<div class="container-login100-form-btn">
+						<button class="login100-form-btn">
+							Se connecter
+						</button>
+					</div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+	
+
+	<div id="dropDownSelect1"></div>
+	
+<!--===============================================================================================-->
+	<script th:src="@{/resources/login/vendor/jquery/jquery-3.2.1.min.js}"></script>
+<!--===============================================================================================-->
+	<script th:src="@{/resources/login/vendor/animsition/js/animsition.min.js}"></script>
+<!--===============================================================================================-->
+	<script th:src="@{/resources/login/vendor/bootstrap/js/popper.js}"></script>
+	<script th:src="@{/resources/login/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<!--===============================================================================================-->
+	<script th:src="@{/resources/login/vendor/select2/select2.min.js}"></script>
+<!--===============================================================================================-->
+	<script th:src="@{/resources/login/vendor/daterangepicker/moment.min.js}"></script>
+	<script th:src="@{/resources/login/vendor/daterangepicker/daterangepicker.js}"></script>
+<!--===============================================================================================-->
+	<script th:src="@{/resources/login/vendor/countdowntime/countdowntime.js}"></script>
+<!--===============================================================================================-->
+	<script th:src="@{/resources/login/js/main.js}"></script>
+
+</body>
+</html>

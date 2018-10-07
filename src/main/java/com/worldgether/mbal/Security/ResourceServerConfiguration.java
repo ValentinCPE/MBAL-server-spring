@@ -27,17 +27,15 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity http) throws Exception {
         http
                 .httpBasic().disable()
-                .anonymous().disable()
                 .csrf().disable()
                 .headers().frameOptions().disable().and()
                 .requestMatchers()
-                .antMatchers("/","/home","/register","/login", "/console/**", "/public/**", "/oauth/authorize")
+                .antMatchers("/", "/home", "/register", "/api/user/login", "/console/**", "/public/**", "/oauth/authorize")
                 .and()
                 .authorizeRequests()
-                .anyRequest()
-                .authenticated()
+                .anyRequest().authenticated()
                 .and()
-                .formLogin()
+                .formLogin().loginPage("/api/user/login").failureUrl("/api/user/login?error=true")
                 .permitAll();
                 /*.anyRequest().authenticated().and()
                 .formLogin().loginPage("/api/user/login").permitAll().and()
@@ -48,7 +46,9 @@ public class ResourceServerConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/public/**", "/console/**");
+        web
+                .ignoring()
+                .antMatchers("/resources/**", "/public/**","/console/**");
     }
 
     @Bean
