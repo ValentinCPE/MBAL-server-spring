@@ -43,7 +43,8 @@ public enum LoggerMessage {
      EVENTS_NOT_EXIST ("[%s] La famille %s n'a pas d'evenement"),
      NO_EVENTS_FOR_DATE("[%s] Pas d'évenement pour la date %s"),
      NEW_COURRIEL_LOCKED("[%s] Un courriel a été reçu moins de 60 secondes avant !"),
-     UNLOCK_REMAINING_TIME("[%s] Nouveau courriel de nouveau possible !");
+     UNLOCK_REMAINING_TIME("[%s] Nouveau courriel de nouveau possible !"),
+     IMAGE_DEFAULT_NO_PROFILE_PICTURE("[%s] Image par défault (%s) envoyée car pas de photo de profil !");
 
     private String message = "";
 

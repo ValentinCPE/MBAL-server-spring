@@ -1,29 +1,85 @@
-<html xmlns:th="http://www.thymeleaf.org">
-    <body>
-        <div th:fragment="content">
-        <h1>OAuth Approval</h1>
-            <p><b th:text="${nameUser}"></b>, do you authorize <b th:text="${clientId}"></b> to access your protected resources?</p>
-            <form id="confirmationForm" name="confirmationForm" th:action="@{/oauth/authorize}" method="post">
-                <input name="user_oauth_approval" value="true" type="hidden"/>
-                <!--String csrfTemplate = null;
-    CsrfToken csrfToken = (CsrfToken) (model.containsKey("_csrf") ? model.get("_csrf") : request.getAttribute("_csrf"));
-    if (csrfToken != null) {
-    -->         <input th:if="${csrfTokenParameter}" type="hidden" name="[[${csrfTokenParameter}]]" value="[[${csrfTokenGetToken}]]" />
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>MBAL Confirm Access</title>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <!--===============================================================================================-->
+    <link rel="icon" type="image/png" th:href="@{/resources/login/images/icons/favicon.ico}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/resources/login/vendor/bootstrap/css/bootstrap.min.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          th:href="@{/resources/login/fonts/font-awesome-4.7.0/css/font-awesome.min.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css"
+          th:href="@{/resources/login/fonts/iconic/css/material-design-iconic-font.min.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/resources/login/vendor/animate/animate.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/resources/login/vendor/css-hamburgers/hamburgers.min.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/resources/login/vendor/animsition/css/animsition.min.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/resources/login/vendor/select2/select2.min.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/resources/login/vendor/daterangepicker/daterangepicker.css}"/>
+    <!--===============================================================================================-->
+    <link rel="stylesheet" type="text/css" th:href="@{/resources/login/css/util.css}"/>
+    <link rel="stylesheet" type="text/css" th:href="@{/resources/login/css/main.css}"/>
+    <!--===============================================================================================-->
+</head>
+<body>
+<div class="limiter" th:fragment="content">
+    <div class="container-login100" th:style="'background-image: url(' + ${pathBackgroundImage} + ');'">
+        <div class="wrap-login100">
+                <span class="login100-form-logo">
+                    <img id="imageProfile" th:style="'background: url(' + ${pathImageProfile} + ');'"/>
+                </span>
 
-                <label>
-                    <input name="authorize" value="Authorize" type="submit"/>
+            <span id="nameUser" class="login100-form-title p-b-34 p-t-27" th:text="${nameUser}"></span>
+
+            <p id="authorizationText">Autorisez-vous <b th:text="${clientId}"></b> à accéder à vos informations ?</p>
+
+            <form id="confirmationForm" name="confirmationForm" class="login100-form validate-form" th:action="@{/oauth/authorize}" method="post">
+                <input name="user_oauth_approval" value="true" type="hidden"/>
+                <input th:if="${csrfTokenParameter}" type="hidden" name="[[${csrfTokenParameter}]]"
+                       value="[[${csrfTokenGetToken}]]"/>
+                <label id="buttonAuthorize">
+                    <button class="btn btn-large btn-success" name="authorize" type="submit" form="confirmationForm" value="Authorize">Autoriser</button>
                 </label>
             </form>
 
-            <form id="denialForm" name="denialForm"  th:action="@{/oauth/authorize}" method="post">
+            <form id="denialForm" name="denialForm" class="login100-form validate-form" th:action="@{/oauth/authorize}" method="post">
                 <input name="user_oauth_approval" value="false" type="hidden"/>
-        <!--if (csrfTemplate != null) {
-        builder.append(-->
-                <input  th:if="${csrfTokenParameter}" type="hidden" name="[[${csrfTokenParameter}]]" value="[[${csrfTokenGetToken}]]"  />
-                <label>
-                    <input name="deny" value="Deny" type="submit"/>
+                <input th:if="${csrfTokenParameter}" type="hidden" name="[[${csrfTokenParameter}]]"
+                       value="[[${csrfTokenGetToken}]]"/>
+                <label id="buttonDeny">
+                    <button class="btn btn-large btn-danger" name="deny" type="submit" form="denialForm" value="Deny">Refuser</button>
                 </label>
             </form>
         </div>
-    </body>
+    </div>
+</div>
+
+<div id="dropDownSelect1"></div>
+
+<!--===============================================================================================-->
+<script th:src="@{/resources/login/vendor/jquery/jquery-3.2.1.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/resources/login/vendor/animsition/js/animsition.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/resources/login/vendor/bootstrap/js/popper.js}"></script>
+<script th:src="@{/resources/login/vendor/bootstrap/js/bootstrap.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/resources/login/vendor/select2/select2.min.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/resources/login/vendor/daterangepicker/moment.min.js}"></script>
+<script th:src="@{/resources/login/vendor/daterangepicker/daterangepicker.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/resources/login/vendor/countdowntime/countdowntime.js}"></script>
+<!--===============================================================================================-->
+<script th:src="@{/resources/login/js/main.js}"></script>
+
+</body>
 </html>

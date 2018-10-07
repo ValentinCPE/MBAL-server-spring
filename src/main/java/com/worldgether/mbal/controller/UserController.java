@@ -11,13 +11,12 @@ import com.worldgether.mbal.repository.SessionsRepository;
 import com.worldgether.mbal.service.FamilyService;
 import com.worldgether.mbal.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
-import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
@@ -28,6 +27,9 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
+
+    @Autowired
+    private Environment environment;
 
     @Autowired
     private UserService userService;
@@ -294,6 +296,12 @@ public class UserController {
                               @RequestParam(value = "logout", required = false) String logout){
 
         ModelAndView modelAndView = new ModelAndView();
+
+        if(this.environment.getActiveProfiles()[0].equals("production")){
+            modelAndView.addObject("pathBackgroundImage", "/MBAL/resources/login/images/bg-01.jpg");
+        }else{
+            modelAndView.addObject("pathBackgroundImage", "/resources/login/images/bg-01.jpg");
+        }
 
         if (error != null)
             modelAndView.addObject("errorMsg", "Your username and password are invalid.");
