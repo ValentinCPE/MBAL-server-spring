@@ -35,15 +35,15 @@
 				<form class="login100-form validate-form" th:action="@{/api/user/login}" method="post">
 
 					<span class="login100-form-title p-b-34 p-t-27">
-						Connexion
+						Connexion MBAL
 					</span>
 
-					<div th:if="${errorMsg}" class="alert alert-error">
-						Nom d'utilisateur et/ou mot de passe incorrect.
+					<div th:if="${errorMsg}" class="alert alert-error" style="color: white;">
+						<b>Nom d'utilisateur et/ou mot de passe incorrect.</b>
 					</div>
 
-					<div th:if="${msg}" class="alert alert-success">
-						Vous avez été déconnecté.
+					<div th:if="${msg}" class="alert alert-success" style="color: white;">
+						<b>Vous avez été déconnecté.</b>
 					</div>
 
 					<div class="wrap-input100 validate-input" data-validate = "Enter username">

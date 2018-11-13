@@ -270,6 +270,28 @@ iframe {
   display: inline-block !important;
 }
 
+@media only screen and (max-width: 600px){
+  #authorizationText{
+    color: white !important;
+    text-align: center !important;
+    font-size: 0.9em;
+  }
+
+  #buttonAuthorize{
+    padding-top: 6%;
+    float: left;
+    margin-left: 5%;
+    display: inline-block !important;
+  }
+
+  #buttonDeny{
+    padding-top: 6%;
+    float: right;
+    margin-right: 5%;
+    display: inline-block !important;
+  }
+}
+
 
 /*------------------------------------------------------------------
 [ Input ]*/

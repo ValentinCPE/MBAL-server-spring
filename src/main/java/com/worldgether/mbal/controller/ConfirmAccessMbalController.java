@@ -41,7 +41,10 @@ public class ConfirmAccessMbalController {
         else clientId = "inconnu";
         modelAndView.addObject("clientId", clientId.substring(0,1).toUpperCase() + clientId.substring(1).toLowerCase());
 
+        String startPathProfilePicture = "";
+
         if(this.environment.getActiveProfiles()[0].equals("production")){
+            startPathProfilePicture = "/MBAL";
             modelAndView.addObject("pathBackgroundImage", "/MBAL/resources/login/images/bg-01.jpg");
         }else{
             modelAndView.addObject("pathBackgroundImage", "/resources/login/images/bg-01.jpg");
@@ -53,14 +56,14 @@ public class ConfirmAccessMbalController {
             modelAndView.addObject("nameUser", user.getPrenom().substring(0,1).toUpperCase()+user.getPrenom().substring(1).toLowerCase()+" "+user.getNom().toUpperCase());
 
             if(user.getProfile_picture_path() != null && !user.getProfile_picture_path().isEmpty()){
-                modelAndView.addObject("pathImageProfile", "/public/files/" + user.getProfile_picture_path());
+                modelAndView.addObject("pathImageProfile", startPathProfilePicture + "/public/files/" + user.getProfile_picture_path());
             }else{
                 log.error(LoggerMessage.getLog(LoggerMessage.IMAGE_DEFAULT_NO_PROFILE_PICTURE.toString(),"ConfirmAccessMbalController", "bonhomme.jpg"));
-                modelAndView.addObject("pathImageProfile", "/public/files/bonhomme.jpg");
+                modelAndView.addObject("pathImageProfile", startPathProfilePicture + "/public/files/bonhomme.jpg");
             }
         }else{
             modelAndView.addObject("nameUser", "inconnu".substring(0,1).toUpperCase()+"inconnu".substring(1).toLowerCase());
-            modelAndView.addObject("pathImageProfile", "/public/files/bonhomme.jpg");
+            modelAndView.addObject("pathImageProfile", startPathProfilePicture + "/public/files/bonhomme.jpg");
         }
 
         if (request.getAttribute("_csrf") != null) {

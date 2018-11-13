@@ -117,5 +117,4 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
                 .checkTokenAccess("hasRole('TRUSTED_CLIENT')");
     }
 
-
 }
