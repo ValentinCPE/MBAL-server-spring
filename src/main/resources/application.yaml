@@ -44,13 +44,13 @@ spring:
   datasource:
     testWhileIdle: true
     validationQuery: SELECT 1
-    url: jdbc:mysql://localhost:3306/MBAL_server?useSSL=false
-    username: valentin
-    password: Frigoule34
+    url: jdbc:mysql://mysql:3306/MBAL_server?useSSL=false
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
 
   data:
     mongodb:
-      host: localhost
+      host: mongo
       port: 27017
       database: MBAL_server
 
